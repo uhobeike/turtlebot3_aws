@@ -12,15 +12,17 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   move_base_msgs
   tf
+  goal_send_msgs
 )
-
 
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES goal_send
 #  CATKIN_DEPENDS roscpp std_msgs
 #  DEPENDS system_lib
+#  CATKIN_DEPENDS roscpp std_msgs message_runtime
 )
+
 include_directories(
   ${catkin_INCLUDE_DIRS}
 )
@@ -30,3 +32,14 @@ include_directories(
 
 add_executable(goal_send src/goal_send.cpp)
 target_link_libraries(goal_send ${catkin_LIBRARIES})
+
+
+add_executable(4goal_send src/4goal_send.cpp)
+add_dependencies(4goal_send ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(4goal_send ${catkin_LIBRARIES})
+
+add_executable(goal_control_key src/goal_control_key.cpp)
+target_link_libraries(goal_control_key ${catkin_LIBRARIES})
+
+add_executable(robot_check_pose src/robot_check_pose.cpp)
+target_link_libraries(robot_check_pose ${catkin_LIBRARIES})
