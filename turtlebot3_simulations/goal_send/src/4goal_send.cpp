@@ -4,6 +4,7 @@
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <move_base_msgs/MoveBaseAction.h>
 #include <actionlib/client/simple_action_client.h>
+#include <tf/transform_broadcaster.h>
 #include <vector>
 #include <string>
 
@@ -41,15 +42,14 @@ int main(int argc, char** argv)
     initPose.pose.pose.position.x = 0;
     initPose.pose.pose.position.y = 0;
     initPose.pose.pose.position.z = 0;
-    initPose.pose.pose.orientation.w = 1.0;
+    initPose.pose.pose.orientation = tf::createQuaternionMsgFromYaw(0*M_PI);
 
     vector<vector<double>> goal_point = 
     {
-        { 2.33, 0.339, 0.99847},
-        { 5.0958, 1.37547, 0.9735},
-        { 5.1, 1.37547, 0.002},
-        { 3.08666, 1.8847, 0.3479},
-        { 0.943, 2.557, 0.1768}
+        { 2.3, 0.3, 0*M_PI},
+        { 5.1, 1.3, 1*M_PI},
+        { 3.0, 1.8, 1*M_PI},
+        { 0.9, 2.4, 1*M_PI}
     };
 
     goal_send_msgs::goal_vector goal_point_role;
@@ -57,7 +57,6 @@ int main(int argc, char** argv)
     {   
         "first goal",
         "second gaol",
-        "Turning",
         "third goal",
         "final goal"
     };
@@ -85,7 +84,7 @@ int main(int argc, char** argv)
         {        
             goal.target_pose.pose.position.x =  goal_point[stoi(vec_num)][0];
             goal.target_pose.pose.position.y =  goal_point[stoi(vec_num)][1];
-            goal.target_pose.pose.orientation.w = goal_point[stoi(vec_num)][2];
+            goal.target_pose.pose.orientation = tf::createQuaternionMsgFromYaw(goal_point[stoi(vec_num)][2]*M_PI);
 
             ac.sendGoal(goal);
 
