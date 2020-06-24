@@ -19,10 +19,10 @@ ros-melodic-rqt-image-view ros-melodic-navigation
 
 ```
 
-新しいワークスペースを作成しsrc内にcloneを行いcatkin_makeにてコンパイルを行います。
+新しいワークスペースを作成し、src内にcloneを行いcatkin_makeにてコンパイルを行います。
 ```
 ~$ mkdir -p ~/turtlebot_ws/src && cd ~/turtlebot_ws/src
-~/turtlebot_ws/src$ git clone https://github.com/uhobeike/turtlebot3_aws.git
+~/turtlebot_ws/src$ git clone -b develop https://github.com/uhobeike/turtlebot3_aws.git
 ~/turtlebot_ws/src$ cd ~/turtlebot_ws
 ~/turtlebot_ws$ catkin_make
 ~/turtlebot_ws$ source ~/turtlebot_ws/devel/setup.bash
@@ -42,12 +42,28 @@ ros-melodic-rqt-image-view ros-melodic-navigation
 ~$ source ~/.bashrc
 ```
 
-開発用ブランチを作成しましょう
+実践編
 
+1.マッピング
 ```
-git branch develop
+~$ roslaunch turtlebot3_gazebo turtlebot3_aws.launch
+~$ roslaunch turtlebot3_slam turtlebot3_slam.launch slam_methods:=gmapping
+~$ roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch
+~$ rosrun map_server map_saver -f ~/map
 ```
+2.ナビゲーション
+```
+~$ roslaunch turtlebot3_gazebo turtlebot3_aws.launch
+~$ roslaunch turtlebot3_navigation turtlebot3_navigation.launch map_file:=$HOME/map.yaml
+~$ rosrun goal_send 4goal_send
+~$ rosrun goal_send goal_control_key
+```
+マッピングデータ(ナビゲーションしたいだけの人用)
+
+https://drive.google.com/drive/folders/1ZoOuWc71f-aDIaHJTL2VshTnQ7ywS9pz?usp=sharing
+
 turtlebot3 e-manial
 
 http://emanual.robotis.com/docs/en/platform/turtlebot3/simulation/#ros-1-simulation
+
 
