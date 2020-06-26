@@ -20,10 +20,15 @@ ros-melodic-rqt-image-view ros-melodic-navigation
 ```
 
 新しいワークスペースを作成し、src内にcloneを行いcatkin_makeにてコンパイルを行います。
+
+＊二度catkin_makeを行う必要があります。それはメッセージファイル(自作)を生成するのに、一回分行うためです。
+
+おそらく何か方法があると思いますが、今のところはcatkin_make2回でお願いします。
 ```
 ~$ mkdir -p ~/turtlebot_ws/src && cd ~/turtlebot_ws/src
 ~/turtlebot_ws/src$ git clone -b develop https://github.com/uhobeike/turtlebot3_aws.git
 ~/turtlebot_ws/src$ cd ~/turtlebot_ws
+~/turtlebot_ws$ catkin_make
 ~/turtlebot_ws$ catkin_make
 ~/turtlebot_ws$ source ~/turtlebot_ws/devel/setup.bash
 ```
@@ -58,7 +63,7 @@ ros-melodic-rqt-image-view ros-melodic-navigation
 ~$ rosrun goal_send 4goal_send
 ~$ rosrun goal_send goal_control_key
 ```
-マッピングデータ(ナビゲーションしたいだけの人用)
+マッピングデータ(ナビゲーションしたいだけの人用,yamlファイルなどが入手できます)
 
 https://drive.google.com/drive/folders/1ZoOuWc71f-aDIaHJTL2VshTnQ7ywS9pz?usp=sharing
 
