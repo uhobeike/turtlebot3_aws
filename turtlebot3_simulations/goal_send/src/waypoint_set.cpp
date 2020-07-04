@@ -6,12 +6,16 @@
 #include <string>
 #include <iterator>
 #include <fstream> 
+#include<stdio.h>
+#include<stdlib.h>
 
 using std::vector;
 using std::string;
 using std::stoi;
 using std::to_string;
 using std::ofstream;
+using std::cout;
+using std::endl;
 
 int first_vec = 1;
 int waypoint_nunber = 1;
@@ -33,21 +37,27 @@ void posi_Callback(const nav_msgs::Odometry::ConstPtr& msg)
 
 void finish_and_file_write_waypoint(vector<vector<string>>& waypoint_file_write)
 {
-    ROS_INFO("finish_and_file_write_waypoint");
+    ROS_INFO("finish_and_file_write_waypoint q(^_^)p");
 
-    waypoint_set.resize(waypoint_nunber--);
-    
-    ofstream f_w("~/waypoint.csv",std::ios::app);
-    
+    waypoint_set.resize(waypoint_nunber);
+
+    char *c = getenv("HOME");
+    string str = c; 
+    ofstream f_w(str + "/waypoint.csv",std::ios::app);
+
     for (auto it_t = waypoint_file_write.begin(); it_t != waypoint_file_write.end(); ++it_t) 
     {
         for (auto it = (*it_t).begin(); it != (*it_t).end(); ++it) 
         {
-            string str;
-            str = *it;
-            ROS_INFO("%s",str.c_str());
+            f_w << *it << ",";
         } 
+
+        f_w << endl;
     }
+    
+    f_w.close();
+
+    ros::shutdown();
 }
 
 void goal_set(vector<vector<string>>& goal_set)
@@ -76,7 +86,8 @@ void way_point_remove(vector<vector<string>>& waypoint_remove)
 {
     ROS_INFO("way_point_remove");
 
-    waypoint_remove[waypoint_nunber-1].pop_back();
+    waypoint_set.resize(--waypoint_nunber);
+    waypoint_set.resize(--waypoint_nunber);
 }
 
 void way_point_Callback(const std_msgs::StringConstPtr& str)
@@ -93,8 +104,8 @@ void way_point_Callback(const std_msgs::StringConstPtr& str)
         else if(str->data == "goal_set") goal_set(waypoint_set);
         else if(str->data ==  "way_point_add") way_point_add(waypoint_set);
         else if(str->data ==  "way_point_remove") way_point_remove(waypoint_set);
-        waypoint_nunber++;
-        waypoint_set.resize(waypoint_nunber);
+
+        waypoint_set.resize(++waypoint_nunber);
     }
 
     else waypoint_nunber = 1;
