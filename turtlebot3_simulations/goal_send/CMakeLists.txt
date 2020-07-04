@@ -43,3 +43,6 @@ target_link_libraries(goal_control_key ${catkin_LIBRARIES})
 
 add_executable(robot_check_pose src/robot_check_pose.cpp)
 target_link_libraries(robot_check_pose ${catkin_LIBRARIES})
+
+add_executable(waypoint_set src/waypoint_set.cpp)
+target_link_libraries(waypoint_set ${catkin_LIBRARIES})
