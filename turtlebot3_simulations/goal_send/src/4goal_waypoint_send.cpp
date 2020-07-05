@@ -66,10 +66,15 @@ void goal_check(vector<vector<string>>& waypoint, int& point_number, int& next_p
     }
 }
 
-void waypoint_nealy_check(vector<vector<string>>& waypoint, vector<double>& odom, int& point_number, int& goal_point_flag)
+void waypoint_nearly_check(vector<vector<string>>& waypoint, vector<double>& odom, int& point_number, int& goal_point_flag)
 {
     double nealy_check_area = 0;
-    nealy_check_area = sqrt(pow(stod(waypoint[point_number][0]) - odom[0], 2) + stod(pow(waypoint[point_number][1]) -odom[1], 2) );
+    double x_way = 0,y_way = 0,x_odm = 0,y_odm = 0;
+    x_way = stod(waypoint[point_number][0]);
+    y_way = stod(waypoint[point_number][1]);
+    x_odm = odom[0];
+    y_odm = odom[1];
+    nealy_check_area = sqrt(pow( x_way - x_odm, 2) + pow( y_way - y_odm, 2) );
     
     if(nealy_check_area == 0.1) point_number++;
 }
@@ -105,7 +110,7 @@ int main(int argc, char** argv)
 
     waypoint_read.emplace_back();
 
-    while (getline(ifs, line)) 
+    while (getline(f_r, line)) 
     {
         istringstream stream(line);
         while (getline(stream, field, ',') )
