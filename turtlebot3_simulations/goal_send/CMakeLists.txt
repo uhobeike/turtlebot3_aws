@@ -41,6 +41,9 @@ target_link_libraries(4goal_send ${catkin_LIBRARIES})
 add_executable(goal_control_key src/goal_control_key.cpp)
 target_link_libraries(goal_control_key ${catkin_LIBRARIES})
 
+add_executable(goal_waypoint_control_key src/goal_waypoint_control_key.cpp)
+target_link_libraries(goal_waypoint_control_key ${catkin_LIBRARIES})
+
 add_executable(robot_check_pose src/robot_check_pose.cpp)
 target_link_libraries(robot_check_pose ${catkin_LIBRARIES})
 

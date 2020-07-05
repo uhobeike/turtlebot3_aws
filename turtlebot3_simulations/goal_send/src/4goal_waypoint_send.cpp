@@ -1,6 +1,5 @@
 #include <ros/ros.h>
 #include <std_msgs/String.h>
-#include <goal_send_msgs/goal_vector.h>
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <nav_msgs/Odometry.h>
 #include <move_base_msgs/MoveBaseAction.h>
@@ -21,6 +20,7 @@ using std::ifstream;
 using std::istringstream;
 using std::pow;
 
+int global_flag = 0;
 int goal_restart_flag = 0;
 string vec_num = "0";
 vector<double> posi_set = 
@@ -33,10 +33,9 @@ typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseCl
 void goal_key_Callback(const std_msgs::StringConstPtr& msg)
 {
     ROS_INFO("receive goal number");
-
-    vec_num = msg->data;
-
-    goal_restart_flag = 1;
+    
+    if(global_flag) goal_restart_flag = 1;
+    global_flag = 1;
 }
 
 void posi_Callback(const nav_msgs::Odometry::ConstPtr& msg)
@@ -60,13 +59,15 @@ void goal_check(vector<vector<string>>& waypoint, int& point_number, int& next_p
 
     if(goal_restart_flag)
     {
+        ROS_INFO("RESTART");
+
         point_number++;
 
         goal_restart_flag = 0;
     }
 }
 
-void waypoint_nearly_check(vector<vector<string>>& waypoint, vector<double>& odom, int& point_number, int& goal_point_flag)
+void waypoint_nearly_check(vector<vector<string>>& waypoint, vector<double>& odom, int& point_number, int& goal_point_flag, double& area_threshold)
 {
     double nealy_check_area = 0;
     double x_way = 0,y_way = 0,x_odm = 0,y_odm = 0;
@@ -76,7 +77,13 @@ void waypoint_nearly_check(vector<vector<string>>& waypoint, vector<double>& odo
     y_odm = odom[1];
     nealy_check_area = sqrt(pow( x_way - x_odm, 2) + pow( y_way - y_odm, 2) );
     
-    if(nealy_check_area <= 0.2) point_number++;
+    if(nealy_check_area <= area_threshold)
+    {
+        ROS_INFO("WAY_POINT PASSING");
+        ROS_INFO("NEXT MOVE PLAN");
+
+        point_number++;
+    }
 }
 
 int main(int argc, char** argv)
@@ -85,12 +92,12 @@ int main(int argc, char** argv)
     ros::NodeHandle nh;
     ros::Publisher pub_pose,pub_goal_data;
     ros::Time tmp_time = ros::Time::now();
+    nh.setParam("waypoint_area_threshold", 0.2);
 
     ros::Subscriber sub_key = nh.subscribe("goal_key", 1,  goal_key_Callback);
     ros::Subscriber sub_pos = nh.subscribe("odom", 100,  posi_Callback);
 
     pub_pose = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("initialpose", 2, true);
-    pub_goal_data = nh.advertise<goal_send_msgs::goal_vector>("goal_data", 1, true);
 
     geometry_msgs::PoseWithCovarianceStamped initPose;
     initPose.header.stamp = tmp_time; 
@@ -123,15 +130,6 @@ int main(int argc, char** argv)
     waypoint_read.resize(--vec_num_int);
     waypoint_read.resize(--vec_num_int);
 
-    goal_send_msgs::goal_vector goal_point_role;
-    goal_point_role.data = 
-    {   
-        "first goal",
-        "second gaol",
-        "third goal",
-        "final goal"
-    };
-
     pub_pose.publish(initPose);
 
     MoveBaseClient ac("move_base", true);
@@ -152,38 +150,41 @@ int main(int argc, char** argv)
     int point_number=0;
     int next_point_flag = 0;
     int goal_point_flag = 0;
-
+    double area_threshold = 0.2;
     while(ros::ok())
     {  
-        goal_check(waypoint_read,  point_number, next_point_flag, goal_point_flag);
+        nh.getParam("waypoint_area_threshold", area_threshold);
 
-        if(next_point_flag)
-        {        
-            goal.target_pose.pose.position.x    = stod(waypoint_read[point_number][0]);
-            goal.target_pose.pose.position.y    = stod(waypoint_read[point_number][1]);
-            goal.target_pose.pose.orientation.z = stod(waypoint_read[point_number][2]);
-            goal.target_pose.pose.orientation.w = stod(waypoint_read[point_number][3]);
-
-            ac.sendGoal(goal);
-
-            waypoint_nearly_check(waypoint_read, posi_set, point_number, goal_point_flag);
-            next_point_flag = 0; 
-        }
-
-        else if (goal_point_flag)
+        if(global_flag)
         {
-            goal.target_pose.pose.position.x    = stod(waypoint_read[point_number][0]);
-            goal.target_pose.pose.position.y    = stod(waypoint_read[point_number][1]);
-            goal.target_pose.pose.orientation.z = stod(waypoint_read[point_number][2]);
-            goal.target_pose.pose.orientation.w = stod(waypoint_read[point_number][3]);
+            goal_check(waypoint_read,  point_number, next_point_flag, goal_point_flag);
 
-            ac.sendGoal(goal);
+            if(next_point_flag)
+            {        
+                goal.target_pose.pose.position.x    = stod(waypoint_read[point_number][0]);
+                goal.target_pose.pose.position.y    = stod(waypoint_read[point_number][1]);
+                goal.target_pose.pose.orientation.z = stod(waypoint_read[point_number][2]);
+                goal.target_pose.pose.orientation.w = stod(waypoint_read[point_number][3]);
 
-            goal_point_flag = 0;
+                ac.sendGoal(goal);
+
+                waypoint_nearly_check(waypoint_read, posi_set, point_number, goal_point_flag, area_threshold);
+                next_point_flag = 0; 
+            }
+
+            else if (goal_point_flag)
+            {
+                goal.target_pose.pose.position.x    = stod(waypoint_read[point_number][0]);
+                goal.target_pose.pose.position.y    = stod(waypoint_read[point_number][1]);
+                goal.target_pose.pose.orientation.z = stod(waypoint_read[point_number][2]);
+                goal.target_pose.pose.orientation.w = stod(waypoint_read[point_number][3]);
+
+                ac.sendGoal(goal);
+
+                goal_point_flag = 0;
+            }
+
         }
-
-        pub_goal_data.publish(goal_point_role);
-
         ros::spinOnce();
         loop_rate.sleep();
     }
