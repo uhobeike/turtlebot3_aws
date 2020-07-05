@@ -46,7 +46,7 @@ ros-melodic-rqt-image-view ros-melodic-navigation
 ```
 ~$ source ~/.bashrc
 ```
-
+___
 実践編
 
 1.マッピング
@@ -56,14 +56,53 @@ ros-melodic-rqt-image-view ros-melodic-navigation
 ~$ roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch
 ~$ rosrun map_server map_saver -f ~/map
 ```
-2.ナビゲーション
+2.ナビゲーション(指定位置)
 ```
 ~$ roslaunch turtlebot3_gazebo turtlebot3_aws.launch
 ~$ roslaunch turtlebot3_navigation turtlebot3_navigation.launch map_file:=$HOME/map.yaml
 ~$ rosrun goal_send 4goal_send
 ~$ rosrun goal_send goal_control_key
 ```
-マッピングデータ(ナビゲーションしたいだけの人用,yamlファイルなどが入手できます)
+3.waypoint用 file生成方法
+```
+~$ roslaunch turtlebot3_gazebo turtlebot3_aws.launch
+~$ roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch
+~$ rosrun goal_send waypoint_set
+```
+$HOME以下にwaypoint.csvが作られる
+
+4.waypointを利用したnavigation
+```
+~$ roslaunch turtlebot3_gazebo turtlebot3_aws.launch
+~$ roslaunch turtlebot3_navigation turtlebot3_navigation.launch map_file:=$HOME/map.yaml
+~$ rosrun goal_send 4goal_waypoint_send
+~$ rosrun goal_send goal_waypoint_control_key
+```
+5.waypoint_navgationしきい値の変更方法
+```
+~$ roslaunch turtlebot3_gazebo turtlebot3_aws.launch
+~$ roslaunch turtlebot3_navigation turtlebot3_navigation.launch map_file:=$HOME/map.yaml
+~$ rosrun goal_send 4goal_waypoint_send
+~$ rosrun goal_send goal_waypoint_control_key
+```
+の後に
+```
+~$ rosparam list
+```
+を実行すると
+```
+/waypoint_area_threshold
+```
+が一番下に表示される（おそらく）
+その値はwaypoint_navgationしきい値である(defalrt=0.2)
+変更都度ビルドを行うのは面倒なので
+```
+~$ rosparam set /waypoint_area_threshold 1
+```
+のように変更を行う（goする前に）
+___
+
+以下のリンクより、マッピングデータ(ナビゲーションしたいだけの人用,yamlファイルなどが入手できます)
 
 https://drive.google.com/drive/folders/1ZoOuWc71f-aDIaHJTL2VshTnQ7ywS9pz?usp=sharing
 
