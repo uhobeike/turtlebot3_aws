@@ -76,7 +76,7 @@ void waypoint_nearly_check(vector<vector<string>>& waypoint, vector<double>& odo
     y_odm = odom[1];
     nealy_check_area = sqrt(pow( x_way - x_odm, 2) + pow( y_way - y_odm, 2) );
     
-    if(nealy_check_area == 0.1) point_number++;
+    if(nealy_check_area <= 0.2) point_number++;
 }
 
 int main(int argc, char** argv)
