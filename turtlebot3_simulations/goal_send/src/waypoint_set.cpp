@@ -42,8 +42,8 @@ void finish_and_file_write_waypoint(vector<vector<string>>& waypoint_file_write)
     waypoint_set.resize(waypoint_nunber);
 
     char *c = getenv("HOME");
-    string str = c; 
-    ofstream f_w(str + "/waypoint.csv",std::ios::app);
+    string HOME = c; 
+    ofstream f_w(HOME + "/waypoint.csv",std::ios::app);
 
     for (auto it_t = waypoint_file_write.begin(); it_t != waypoint_file_write.end(); ++it_t) 
     {

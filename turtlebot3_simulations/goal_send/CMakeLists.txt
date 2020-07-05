@@ -46,3 +46,6 @@ target_link_libraries(robot_check_pose ${catkin_LIBRARIES})
 
 add_executable(waypoint_set src/waypoint_set.cpp)
 target_link_libraries(waypoint_set ${catkin_LIBRARIES})
+
+add_executable(4goal_waypoint_send src/4goal_waypoint_send.cpp)
+target_link_libraries(4goal_waypoint_send ${catkin_LIBRARIES})
