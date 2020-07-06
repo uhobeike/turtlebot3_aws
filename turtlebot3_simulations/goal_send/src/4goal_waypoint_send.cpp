@@ -20,7 +20,6 @@ using std::ifstream;
 using std::istringstream;
 using std::pow;
 
-int global_flag = 0;
 int goal_restart_flag = 0;
 string vec_num = "0";
 vector<double> posi_set = 
@@ -34,7 +33,10 @@ void goal_key_Callback(const std_msgs::StringConstPtr& msg)
 {
     ROS_INFO("receive goal number");
     
+    static global_flag = 0;
+
     if(global_flag) goal_restart_flag = 1;
+    
     global_flag = 1;
 }
 
