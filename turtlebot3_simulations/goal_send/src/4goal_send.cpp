@@ -45,11 +45,11 @@ int main(int argc, char** argv)
 
     vector<vector<double>> goal_point = 
     {
-        { 2.33, 0.339, 0.99847},
-        { 5.0958, 1.37547, 0.9735},
-        { 5.1, 1.37547, 0.002},
-        { 3.08666, 1.8847, 0.3479},
-        { 0.943, 2.557, 0.1768}
+        { 2.33, 0.339, 1.0, 0.0},
+        { 5.0958, 1.37547, 0.0, 1.0},
+        { 5.1, 1.37547, 0.0, 1.0},
+        { 3.08666, 1.8847, 0.3827, 0.9239},
+        { 0.943, 2.557, 0.0, 1.0}
     };
 
     goal_send_msgs::goal_vector goal_point_role;
@@ -86,7 +86,7 @@ int main(int argc, char** argv)
             goal.target_pose.pose.position.x =  goal_point[stoi(vec_num)][0];
             goal.target_pose.pose.position.y =  goal_point[stoi(vec_num)][1];
             goal.target_pose.pose.orientation.w = goal_point[stoi(vec_num)][2];
-
+            goal.target_pose.pose.orientation.z = goal_point[stoi(vec_num)][3];
             ac.sendGoal(goal);
 
         }
