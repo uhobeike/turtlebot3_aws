@@ -4,6 +4,7 @@
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <move_base_msgs/MoveBaseAction.h>
 #include <actionlib/client/simple_action_client.h>
+#include <tf/transform_broadcaster.h>
 #include <vector>
 #include <string>
 
@@ -41,7 +42,7 @@ int main(int argc, char** argv)
     initPose.pose.pose.position.x = 0;
     initPose.pose.pose.position.y = 0;
     initPose.pose.pose.position.z = 0;
-    initPose.pose.pose.orientation.w = 1.0;
+    initPose.pose.pose.orientation = tf::createQuaternionMsgFromYaw(0*M_PI);
 
     vector<vector<double>> goal_point = 
     {
@@ -54,10 +55,9 @@ int main(int argc, char** argv)
 
     goal_send_msgs::goal_vector goal_point_role;
     goal_point_role.data = 
-    {   
+    {
         "first goal",
         "second gaol",
-        "Turning",
         "third goal",
         "final goal"
     };

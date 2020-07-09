@@ -6,7 +6,6 @@
 #include <algorithm>
 
 using std::cin;
-using std::cout;
 using std::iswdigit;
 using std::string;
 using std::stoi;
@@ -71,8 +70,7 @@ int main(int argc, char** argv){
         {
             std_msgs::String msg_key;
             msg_key.data = getKey();
-            cout << index_cnt << std::endl;
-            cout << key << std::endl;
+
             if(stoi(key) <= index_cnt) pub.publish(msg_key);
         }
 
