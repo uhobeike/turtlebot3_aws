@@ -1,4 +1,4 @@
     <launch>
-        <node pkg="goal_send" name="4goal_send" type="4goal_send"/>
-        <node pkg="goal_send" name="goal_control_key" type="goal_control_key"/>
+        <node pkg="goal_send" name="goal_4" type="4goal_send"/>
+        <node pkg="goal_send" name="goal_control_key" type="goal_control_key" output="screen"/>
     </launch>

@@ -1,0 +1,4 @@
+    <launch>
+        <node pkg="goal_send" name="goal_4_waypoint" type="4goal_waypoint_send" output="screen"/>
+        <node pkg="goal_send" name="goal_key_send" type="goal_waypoint_control_key" output="screen"/>
+    </launch>
