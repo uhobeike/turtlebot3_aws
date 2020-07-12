@@ -22,11 +22,14 @@ using std::stod;
 using std::ifstream;
 using std::istringstream;
 using std::pow;
+using std::cout;
+using std::endl;
 
 bool start_flag;
 bool lock_flag;
-short goal_reached_flag;
+bool goal_reached_flag;
 bool goal_restart_flag;
+bool final_goal_flag;
 string vec_num = "0";
 vector<double> posi_set = 
 {
@@ -70,7 +73,7 @@ void goal_reached_Callback(const actionlib_msgs::GoalStatusArray::ConstPtr &stat
     }
 }  
 
-void goal_check(vector<vector<string>>& waypoint, int& point_number, int& next_point_flag, int& goal_point_flag)
+void goal_check(vector<vector<string>>& waypoint, int& point_number, int& vec_size, int& next_point_flag, int& goal_point_flag)
 {   
     if(waypoint[point_number].size() >= 0 && waypoint[point_number].size() <= 4)
     {
@@ -80,6 +83,8 @@ void goal_check(vector<vector<string>>& waypoint, int& point_number, int& next_p
     {
         goal_point_flag = 1;
     }
+
+    if(point_number == (vec_size - 2) && goal_reached_flag) final_goal_flag = 1;
 
     if(goal_reached_flag)
     {
@@ -96,6 +101,12 @@ void goal_check(vector<vector<string>>& waypoint, int& point_number, int& next_p
         point_number++;
 
         goal_restart_flag = 0;
+    }
+
+    if(final_goal_flag)
+    {
+        ROS_INFO("Final goal reached");
+        ROS_INFO("please send q command");
     }
 }
 
@@ -122,7 +133,7 @@ int main(int argc, char** argv)
 {   
     ros::init(argc, argv, "goal_4_waypoint");
     ros::NodeHandle nh;
-    ros::Publisher pub_pose,pub_goal_data;
+    ros::Publisher pub_pose;
     ros::Time tmp_time = ros::Time::now();
     nh.setParam("waypoint_area_threshold", 0.2);
 
@@ -180,6 +191,7 @@ int main(int argc, char** argv)
 
     ros::Rate loop_rate(10);//10Hz
 
+    int vec_size = waypoint_read.size();
     int point_number=0;
     int next_point_flag = 0;
     int goal_point_flag = 0;
@@ -190,7 +202,7 @@ int main(int argc, char** argv)
 
         if(start_flag)
         {
-            goal_check(waypoint_read,  point_number, next_point_flag, goal_point_flag);
+            goal_check(waypoint_read,  point_number, vec_size, next_point_flag, goal_point_flag);
 
             if(next_point_flag)
             {        
