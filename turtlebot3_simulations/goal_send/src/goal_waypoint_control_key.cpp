@@ -1,4 +1,7 @@
 #include <ros/ros.h>
+#include <move_base_msgs/MoveBaseAction.h>
+#include <actionlib/client/simple_action_client.h>
+
 #include <std_msgs/String.h>
 #include <iterator>
 #include <string>
@@ -11,9 +14,10 @@ using std::stoi;
 
 int sub_flag;
 int index_cnt;
-string key = "0";
 
-string getKey()
+typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
+
+string getKey(string& key)
 {
     ROS_INFO("go Comand Only ,but 'q' is shutdown");
 
@@ -21,11 +25,10 @@ string getKey()
     {
         cin >> key;
         
-        if(key == "go") break;
+        if(key == "go" || key == "q") break;
 
-        else if(key == "q") ros::shutdown();
+        else ROS_INFO("go Comand Only ,but 'q' is shutdown");
     }
-    return key;
 }
 
 int main(int argc, char** argv){
@@ -36,14 +39,28 @@ int main(int argc, char** argv){
 
     pub = nh.advertise<std_msgs::String>("goal_key", 1, true);
 
+    MoveBaseClient ac("move_base", true);
+
+    while(!ac.waitForServer(ros::Duration(5.0)))
+    {
+        ROS_INFO("Waiting for the move_base action server to come up");
+    }
+
     ros::Rate loop_rate(10);//10Hz
 
     while (ros::ok())
     {
         std_msgs::String msg_key;
-        msg_key.data = getKey();
+        
+        getKey(msg_key.data);
 
         if(msg_key.data == "go") pub.publish(msg_key);
+
+        else if (msg_key.data == "q") 
+        {
+            pub.publish(msg_key);
+            ros::shutdown();
+        }
     
         ros::spinOnce();
         loop_rate.sleep();

@@ -5,6 +5,7 @@
 #include <move_base_msgs/MoveBaseAction.h>
 #include <actionlib/client/simple_action_client.h>
 #include <tf/transform_broadcaster.h>
+
 #include <vector>
 #include <string>
 #include <fstream> 
@@ -21,6 +22,7 @@ using std::ifstream;
 using std::istringstream;
 using std::pow;
 
+bool global_flag = 0;
 int goal_restart_flag = 0;
 string vec_num = "0";
 vector<double> posi_set = 
@@ -32,10 +34,14 @@ typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseCl
 
 void goal_key_Callback(const std_msgs::StringConstPtr& msg)
 {
+    if(msg->data == "q")
+    {
+        ROS_INFO("shutdown now ('o')/ bye bye~~~");
+        ros::shutdown();
+    }
+
     ROS_INFO("receive goal number");
     
-    static global_flag = 0;
-
     if(global_flag) goal_restart_flag = 1;
     
     global_flag = 1;
@@ -186,7 +192,6 @@ int main(int argc, char** argv)
 
                 goal_point_flag = 0;
             }
-
         }
         ros::spinOnce();
         loop_rate.sleep();
