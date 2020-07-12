@@ -3,6 +3,7 @@
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <nav_msgs/Odometry.h>
 #include <move_base_msgs/MoveBaseAction.h>
+#include <actionlib_msgs/GoalStatusArray.h>
 #include <actionlib/client/simple_action_client.h>
 #include <tf/transform_broadcaster.h>
 
@@ -22,8 +23,10 @@ using std::ifstream;
 using std::istringstream;
 using std::pow;
 
-bool global_flag = 0;
-int goal_restart_flag = 0;
+bool start_flag;
+bool lock_flag;
+short goal_reached_flag;
+bool goal_restart_flag;
 string vec_num = "0";
 vector<double> posi_set = 
 {
@@ -36,15 +39,15 @@ void goal_key_Callback(const std_msgs::StringConstPtr& msg)
 {
     if(msg->data == "q")
     {
-        ROS_INFO("shutdown now ('o')/ bye bye~~~");
+        ROS_INFO("Shutdown now ('o')/ bye bye~~~");
         ros::shutdown();
     }
 
-    ROS_INFO("receive goal number");
+    ROS_INFO("Received a control command");
     
-    if(global_flag) goal_restart_flag = 1;
+    if(start_flag) goal_restart_flag = 1;
     
-    global_flag = 1;
+    start_flag = 1;
 }
 
 void posi_Callback(const nav_msgs::Odometry::ConstPtr& msg)
@@ -53,6 +56,18 @@ void posi_Callback(const nav_msgs::Odometry::ConstPtr& msg)
     posi_set.at(1) = msg->pose.pose.position.y;
     posi_set.at(2) = msg->pose.pose.orientation.z;
     posi_set.at(3) = msg->pose.pose.orientation.w;
+}  
+
+void goal_reached_Callback(const actionlib_msgs::GoalStatusArray::ConstPtr &status)
+{
+    if (!status->status_list.empty() )
+    {
+        actionlib_msgs::GoalStatus goalStatus = status->status_list[0];
+
+        if(goalStatus.status == 3 && goal_reached_flag == 0 && lock_flag == 0) goal_reached_flag = 1;
+        
+        if(goalStatus.status != 0 && goalStatus.status != 3) lock_flag = 0;
+    }
 }  
 
 void goal_check(vector<vector<string>>& waypoint, int& point_number, int& next_point_flag, int& goal_point_flag)
@@ -64,6 +79,14 @@ void goal_check(vector<vector<string>>& waypoint, int& point_number, int& next_p
     else if(waypoint[point_number].size() > 4)
     {
         goal_point_flag = 1;
+    }
+
+    if(goal_reached_flag)
+    {
+        ROS_INFO("Goal reached");
+        ROS_INFO("go Comand Only ,but 'q' is shutdown");
+        goal_reached_flag = 0;
+        lock_flag = 1;
     }
 
     if(goal_restart_flag)
@@ -105,6 +128,7 @@ int main(int argc, char** argv)
 
     ros::Subscriber sub_key = nh.subscribe("goal_key", 1,  goal_key_Callback);
     ros::Subscriber sub_pos = nh.subscribe("odom", 100,  posi_Callback);
+    ros::Subscriber sub_goal = nh.subscribe("move_base/status", 100,  goal_reached_Callback);
 
     pub_pose = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("initialpose", 2, true);
 
@@ -164,7 +188,7 @@ int main(int argc, char** argv)
     {  
         nh.getParam("waypoint_area_threshold", area_threshold);
 
-        if(global_flag)
+        if(start_flag)
         {
             goal_check(waypoint_read,  point_number, next_point_flag, goal_point_flag);
 
