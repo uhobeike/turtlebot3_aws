@@ -3,8 +3,10 @@
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <nav_msgs/Odometry.h>
 #include <move_base_msgs/MoveBaseAction.h>
+#include <actionlib_msgs/GoalStatusArray.h>
 #include <actionlib/client/simple_action_client.h>
 #include <tf/transform_broadcaster.h>
+
 #include <vector>
 #include <string>
 #include <fstream> 
@@ -20,8 +22,14 @@ using std::stod;
 using std::ifstream;
 using std::istringstream;
 using std::pow;
+using std::cout;
+using std::endl;
 
-int goal_restart_flag = 0;
+bool start_flag;
+bool lock_flag;
+bool goal_reached_flag;
+bool goal_restart_flag;
+bool final_goal_flag;
 string vec_num = "0";
 vector<double> posi_set = 
 {
@@ -32,13 +40,17 @@ typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseCl
 
 void goal_key_Callback(const std_msgs::StringConstPtr& msg)
 {
-    ROS_INFO("receive goal number");
-    
-    static global_flag = 0;
+    if(msg->data == "q")
+    {
+        ROS_INFO("Shutdown now ('o')/ bye bye~~~");
+        ros::shutdown();
+    }
 
-    if(global_flag) goal_restart_flag = 1;
+    ROS_INFO("Received a control command");
     
-    global_flag = 1;
+    if(start_flag) goal_restart_flag = 1;
+    
+    start_flag = 1;
 }
 
 void posi_Callback(const nav_msgs::Odometry::ConstPtr& msg)
@@ -49,7 +61,19 @@ void posi_Callback(const nav_msgs::Odometry::ConstPtr& msg)
     posi_set.at(3) = msg->pose.pose.orientation.w;
 }  
 
-void goal_check(vector<vector<string>>& waypoint, int& point_number, int& next_point_flag, int& goal_point_flag)
+void goal_reached_Callback(const actionlib_msgs::GoalStatusArray::ConstPtr &status)
+{
+    if (!status->status_list.empty() )
+    {
+        actionlib_msgs::GoalStatus goalStatus = status->status_list[0];
+
+        if(goalStatus.status == 3 && goal_reached_flag == 0 && lock_flag == 0) goal_reached_flag = 1;
+        
+        if(goalStatus.status != 0 && goalStatus.status != 3) lock_flag = 0;
+    }
+}  
+
+void goal_check(vector<vector<string>>& waypoint, int& point_number, int& vec_size, int& next_point_flag, int& goal_point_flag)
 {   
     if(waypoint[point_number].size() >= 0 && waypoint[point_number].size() <= 4)
     {
@@ -60,6 +84,16 @@ void goal_check(vector<vector<string>>& waypoint, int& point_number, int& next_p
         goal_point_flag = 1;
     }
 
+    if(point_number == (vec_size - 2) && goal_reached_flag) final_goal_flag = 1;
+
+    if(goal_reached_flag)
+    {
+        ROS_INFO("Goal reached");
+        ROS_INFO("go Comand Only ,but 'q' is shutdown");
+        goal_reached_flag = 0;
+        lock_flag = 1;
+    }
+
     if(goal_restart_flag)
     {
         ROS_INFO("RESTART");
@@ -67,6 +101,12 @@ void goal_check(vector<vector<string>>& waypoint, int& point_number, int& next_p
         point_number++;
 
         goal_restart_flag = 0;
+    }
+
+    if(final_goal_flag)
+    {
+        ROS_INFO("Final goal reached");
+        ROS_INFO("please send q command");
     }
 }
 
@@ -93,12 +133,13 @@ int main(int argc, char** argv)
 {   
     ros::init(argc, argv, "goal_4_waypoint");
     ros::NodeHandle nh;
-    ros::Publisher pub_pose,pub_goal_data;
+    ros::Publisher pub_pose;
     ros::Time tmp_time = ros::Time::now();
     nh.setParam("waypoint_area_threshold", 0.2);
 
     ros::Subscriber sub_key = nh.subscribe("goal_key", 1,  goal_key_Callback);
     ros::Subscriber sub_pos = nh.subscribe("odom", 100,  posi_Callback);
+    ros::Subscriber sub_goal = nh.subscribe("move_base/status", 100,  goal_reached_Callback);
 
     pub_pose = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("initialpose", 2, true);
 
@@ -150,6 +191,7 @@ int main(int argc, char** argv)
 
     ros::Rate loop_rate(10);//10Hz
 
+    int vec_size = waypoint_read.size();
     int point_number=0;
     int next_point_flag = 0;
     int goal_point_flag = 0;
@@ -158,9 +200,9 @@ int main(int argc, char** argv)
     {  
         nh.getParam("waypoint_area_threshold", area_threshold);
 
-        if(global_flag)
+        if(start_flag)
         {
-            goal_check(waypoint_read,  point_number, next_point_flag, goal_point_flag);
+            goal_check(waypoint_read,  point_number, vec_size, next_point_flag, goal_point_flag);
 
             if(next_point_flag)
             {        
@@ -186,7 +228,6 @@ int main(int argc, char** argv)
 
                 goal_point_flag = 0;
             }
-
         }
         ros::spinOnce();
         loop_rate.sleep();
