@@ -11,8 +11,6 @@
 #include <string>
 #include <fstream> 
 #include <sstream>
-#include<stdio.h>
-#include<stdlib.h>
 #include <cmath>
 
 using std::vector;
@@ -151,9 +149,7 @@ int main(int argc, char** argv)
     initPose.pose.pose.position.z = 0;
     initPose.pose.pose.orientation.w = 1;
 
-    char *c = getenv("HOME");
-    string HOME = c; 
-    ifstream f_r(HOME + "/waypoint.csv",std::ios::in);
+    ifstream f_r("../waypoint.csv",std::ios::in);
 
     vector<vector<string>> waypoint_read;
     string line,field;
