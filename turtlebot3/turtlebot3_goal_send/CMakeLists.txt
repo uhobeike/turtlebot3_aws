@@ -30,16 +30,15 @@ include_directories(
 ## Build ##
 ###########
 
-add_executable(goal_send src/goal_send.cpp)
-target_link_libraries(goal_send ${catkin_LIBRARIES})
+#add_executable(goal_send src/goal_send.cpp)
+#target_link_libraries(goal_send ${catkin_LIBRARIES})
 
+#add_executable(4goal_send src/4goal_send.cpp)
+#add_dependencies(4goal_send ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#target_link_libraries(4goal_send ${catkin_LIBRARIES})
 
-add_executable(4goal_send src/4goal_send.cpp)
-add_dependencies(4goal_send ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(4goal_send ${catkin_LIBRARIES})
-
-add_executable(goal_control_key src/goal_control_key.cpp)
-target_link_libraries(goal_control_key ${catkin_LIBRARIES})
+#add_executable(goal_control_key src/goal_control_key.cpp)
+#target_link_libraries(goal_control_key ${catkin_LIBRARIES})
 
 add_executable(goal_waypoint_control_key src/goal_waypoint_control_key.cpp)
 target_link_libraries(goal_waypoint_control_key ${catkin_LIBRARIES})
@@ -52,3 +51,10 @@ target_link_libraries(waypoint_set ${catkin_LIBRARIES})
 
 add_executable(4goal_waypoint_send src/4goal_waypoint_send.cpp)
 target_link_libraries(4goal_waypoint_send ${catkin_LIBRARIES})
+
+################################################################################
+# Install
+################################################################################
+install(DIRECTORY launch
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
