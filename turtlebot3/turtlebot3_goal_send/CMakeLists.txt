@@ -51,6 +51,9 @@ target_link_libraries(waypoint_set ${catkin_LIBRARIES})
 add_executable(4goal_waypoint_send src/4goal_waypoint_send.cpp)
 target_link_libraries(4goal_waypoint_send ${catkin_LIBRARIES})
 
+add_executable(4goal_waypoint_send_2 src/4goal_waypoint_send_2.cpp)
+target_link_libraries(4goal_waypoint_send_2 ${catkin_LIBRARIES})
+
 ################################################################################
 # Install
 ################################################################################
