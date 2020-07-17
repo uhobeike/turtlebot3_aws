@@ -29,7 +29,6 @@
 
 import rospy
 from geometry_msgs.msg import Twist
-from std_msgs.msg import String
 import sys, select, os
 if os.name == 'nt':
   import msvcrt
@@ -50,14 +49,12 @@ Control Your TurtleBot3!
 ---------------------------
 Moving around:
         w
-   a    s    d     f  g  j  k 
+   a    s    d
         x
 
-w/x : incre/decre linear velocity 
-a/d : incre/decre angular velocity 
-j/k : waypoint add/waypoint add remove
-g   : goal set
-f   : finish and file write waypoint
+w/x : increase/decrease linear velocity (Burger : ~ 0.22, Waffle and Waffle Pi : ~ 0.26)
+a/d : increase/decrease angular velocity (Burger : ~ 2.84, Waffle and Waffle Pi : ~ 1.82)
+
 space key, s : force stop
 
 CTRL-C to quit
@@ -130,7 +127,6 @@ if __name__=="__main__":
 
     rospy.init_node('turtlebot3_teleop')
     pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
-    pub_way = rospy.Publisher('waypoint_set_flag', String, queue_size=10)
 
     turtlebot3_model = rospy.get_param("model", "burger")
 
@@ -160,22 +156,6 @@ if __name__=="__main__":
                 target_angular_vel = checkAngularLimitVelocity(target_angular_vel - ANG_VEL_STEP_SIZE)
                 status = status + 1
                 print(vels(target_linear_vel,target_angular_vel))
-            elif key == 'f' :
-                 str = "finish and file_write_waypoint"
-                 pub_way.publish(str)
-                 rospy.loginfo("finish and file write waypoint \(^_^)/")
-            elif key == 'g' :
-                 str = "goal_set"
-                 pub_way.publish(str)
-                 rospy.loginfo("goal_set..............")
-            elif key == 'j' :
-                 str = "way_point_add"
-                 pub_way.publish(str)
-                 rospy.loginfo("way_point_add.........")
-            elif key == 'k' :
-                 str = "way_point_remove"
-                 pub_way.publish(str)
-                 rospy.loginfo("way_point_remove.........")
             elif key == ' ' or key == 's' :
                 target_linear_vel   = 0.0
                 control_linear_vel  = 0.0
