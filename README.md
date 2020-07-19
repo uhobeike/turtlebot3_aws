@@ -1,5 +1,5 @@
 # turtlebot3_aws(takagon_delivery_challenge :notes:)
-
+[![Build Status](https://travis-ci.org/uhobeike/turtlebot3_aws.svg?branch=takagon_delivery_challenge)](https://travis-ci.org/uhobeike/turtlebot3_aws)
 ### パッケージ概要
 takagon_delivery_challengeを行うことでturtlebot3及び自律移動ロボットにおけるパラメータを
 学習することを目的としている。
