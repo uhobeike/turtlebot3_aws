@@ -42,7 +42,7 @@ diagnostic_msgs::DiagnosticStatus button_state;
 
 typedef struct
 {
-  int major_number;
+  int major_number
   int minor_number;
   int patch_number;
 }VERSION;
