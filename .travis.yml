@@ -37,8 +37,8 @@ install:
   - cd ~/catkin_ws/src
   - ln -s $CI_SOURCE_PATH .
   # additional src package for build
-  - git clone -b takagon_delivery_challenge https://github.com/uhobeike/turtlebot3_aws.git
-
+  
+  - cd && mv /turtlebot3_aws ~/catkin_ws/src/turtlebot3_aws
 script:
   # build
   - cd ~/catkin_ws
