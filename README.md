@@ -1,12 +1,12 @@
 # turtlebot3_aws(takagon_delivery_challenge :notes:)
 
-### :smirk_cat: パッケージ概要 :smirk_cat:
+### パッケージ概要
 takagon_delivery_challengeを行うことでturtlebot3及び自律移動ロボットにおけるパラメータを
 学習することを目的としている。
 
 開催期間(2020年7月17〜2020年9月下旬まで)
 
-### パッケージ内容 :bowtie:
+### パッケージ内容 
 パラメータについてはデフォルトです。ワールドだけ追加を行ったぐらいで他に変更は行ってません。
 
 このパッケージに適宜修正を各自で行ってもらいます。
@@ -119,4 +119,4 @@ ___
 [turtlebot3_e-manual](http://emanual.robotis.com/docs/en/platform/turtlebot3/simulation/#ros-1-simulation)
 
 
-:poop: :poop: :poop: :poop: :poop: :poop: :poop: :poop: :poop: :poop:  
+:poop: :poop: :poop: :poop: :poop: :poop: :poop: :poop: :poop: :poop:  :poop: :poop: :poop: :poop: :poop: :poop: :poop: :poop: :poop: :poop:  :poop: :poop: :poop: :poop: :poop: :poop: :poop: :poop: :poop: :poop:  :poop: :poop: :poop: :poop: :poop: :poop: :poop: :poop:
