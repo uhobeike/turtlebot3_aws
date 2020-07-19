@@ -32,14 +32,10 @@ ros-melodic-rqt-image-view ros-melodic-navigation
 
 新しいワークスペースを作成し、src内にcloneを行いcatkin_makeにてコンパイルを行います。
 
-＊二度catkin_makeを行う必要があります。それはメッセージファイル(自作)を生成するのに、一回分行うためです。
-
-おそらく何か方法があると思いますが、今のところはcatkin_make2回でお願いします。
 ```
 ~$ mkdir -p ~/turtlebot_ws/src && cd ~/turtlebot_ws/src
 ~/turtlebot_ws/src$ git clone -b takagon_delivery_challenge https://github.com/uhobeike/turtlebot3_aws.git
 ~/turtlebot_ws/src$ cd ~/turtlebot_ws
-~/turtlebot_ws$ catkin_make
 ~/turtlebot_ws$ catkin_make
 ~/turtlebot_ws$ source ~/turtlebot_ws/devel/setup.bash
 ```
