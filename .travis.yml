@@ -36,9 +36,7 @@ install:
   - source devel/setup.bash
   - cd ~/catkin_ws/src
   - ln -s $CI_SOURCE_PATH .
-  # additional src package for build
   
-  - cd && ls && mv ~/turtlebot3_aws ~/catkin_ws/src/turtlebot3_aws
 script:
   # build
   - cd ~/catkin_ws
