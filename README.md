@@ -1,24 +1,24 @@
 # turtlebot3_aws(takagon_delivery_challenge :notes:)
 
-### パッケージ概要
+### :smirk_cat: パッケージ概要 :smirk_cat:
 takagon_delivery_challengeを行うことでturtlebot3及び自律移動ロボットにおけるパラメータを
 学習することを目的としている。
 
 開催期間(2020年7月17〜2020年9月下旬まで)
 
-### パッケージ内容
+### パッケージ内容 :bowtie:
 パラメータについてはデフォルトです。ワールドだけ追加を行ったぐらいで他に変更は行ってません。
 
 このパッケージに適宜修正を各自で行ってもらいます。
 
-### 大会競技内容
+### :dizzy:大会競技内容:dizzy:
 
 マッピングを行うと以下のようなマップ（pgm）(yaml)を手に入れると思います。それを使用してnavigationを
 行います。Sがスタート地点でGがゴール地点です。完走できるように各自で、ゴール用node(c++)の作成とパラメータ調整を行いましょう。オレンジの線を通るようにしてください。質問はslackで受け付けています。
 
 ![エビフライトライアングル](https://i.gyazo.com/7811cd6dd3add602cf3b1e9f5225a2c6.png "コースマップ")
 
-### 導入方法
+### 導入方法 :sunglasses:
 下記のようにapt-getで必要なパッケージをインストールします。
 ```
 sudo apt-get install ros-melodic-joy ros-melodic-teleop-twist-joy ros-melodic-teleop-twist-keyboard \ 
@@ -58,7 +58,7 @@ ros-melodic-rqt-image-view ros-melodic-navigation
 ~$ source ~/.bashrc
 ```
 ___
-実践編
+### 実践編 :alien:
 
 1.マッピング
 ```
@@ -73,10 +73,10 @@ ___
 ~$ roslaunch turtlebot3_navigation turtlebot3_navigation.launch map_file:=$HOME/map.yaml
 これ以外にゴールを指定するプログラム必要(作ってみましょー)
 ```
-### とても参考になる本
+### とても参考になる本 :heart_eyes:
 
 [ROSロボットプログラミングバイブル（パラメータについて書いてある）（丸善でも売ってる）](https://www.amazon.co.jp/ROS%E3%83%AD%E3%83%9C%E3%83%83%E3%83%88%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%E3%83%90%E3%82%A4%E3%83%96%E3%83%AB-%E8%A1%A8-%E5%85%81%E3%80%93/dp/4274221962)
-### 参考になるサイトたち
+### 参考になるサイトたち :kissing_heart:
 * パラメータについて
 
 [狭いところ通りたい場合](http://emanual.robotis.com/docs/en/platform/turtlebot3/navigation/#tuning-guide)
@@ -119,3 +119,4 @@ ___
 [turtlebot3_e-manual](http://emanual.robotis.com/docs/en/platform/turtlebot3/simulation/#ros-1-simulation)
 
 
+:poop: :poop: :poop: :poop: :poop: :poop: :poop: :poop: :poop: :poop:  
