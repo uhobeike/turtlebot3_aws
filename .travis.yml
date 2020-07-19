@@ -21,6 +21,7 @@ before_install:
   - git clone https://github.com/ryuichiueda/ros_setup_scripts_Ubuntu18.04_desktop.git
 
   # ros_install
+  - cd ros_setup_scripts_Ubuntu18.04_desktop
   - ./step0.bash && ./step1.bash
 
 
