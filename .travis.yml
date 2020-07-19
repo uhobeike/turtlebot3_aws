@@ -38,7 +38,7 @@ install:
   - ln -s $CI_SOURCE_PATH .
   # additional src package for build
   
-  - cd && mv /turtlebot3_aws ~/catkin_ws/src/turtlebot3_aws
+  - cd && ls && mv ~/turtlebot3_aws ~/catkin_ws/src/turtlebot3_aws
 script:
   # build
   - cd ~/catkin_ws
