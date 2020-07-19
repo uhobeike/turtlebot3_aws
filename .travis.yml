@@ -23,6 +23,7 @@ before_install:
   # ros_install
   - cd ros_setup_scripts_Ubuntu18.04_desktop
   - ./step0.bash && ./step1.bash
+  - cd && source .bashrc
 
 
 install:
