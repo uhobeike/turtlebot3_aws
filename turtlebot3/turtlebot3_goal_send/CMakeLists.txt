@@ -48,11 +48,17 @@ target_link_libraries(robot_check_pose ${catkin_LIBRARIES})
 add_executable(waypoint_set src/waypoint_set.cpp)
 target_link_libraries(waypoint_set ${catkin_LIBRARIES})
 
+add_executable(waypoint_set_amcl src/waypoint_set_amcl.cpp)
+target_link_libraries(waypoint_set_amcl ${catkin_LIBRARIES})
+
 add_executable(4goal_waypoint_send src/4goal_waypoint_send.cpp)
 target_link_libraries(4goal_waypoint_send ${catkin_LIBRARIES})
 
 add_executable(4goal_waypoint_send_2 src/4goal_waypoint_send_2.cpp)
 target_link_libraries(4goal_waypoint_send_2 ${catkin_LIBRARIES})
+
+add_executable(4goal_waypoint_send_3 src/4goal_waypoint_send_3.cpp)
+target_link_libraries(4goal_waypoint_send_3 ${catkin_LIBRARIES})
 
 ################################################################################
 # Install
