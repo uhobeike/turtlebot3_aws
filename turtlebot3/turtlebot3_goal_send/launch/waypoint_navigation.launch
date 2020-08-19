@@ -1,4 +1,5 @@
     <launch>
-        <node pkg="turtlebot3_goal_send" name="goal_4_waypoint" type="4goal_waypoint_send_2" output="screen"/>
-        <node pkg="turtlebot3_goal_send" name="goal_key_send" type="goal_waypoint_control_key" output="screen"/>
+        <node pkg="turtlebot3_goal_send" name="goal_4_waypoint" type="4goal_waypoint_send_3" output="screen"/>
+        <node pkg="turtlebot3_goal_send" name="waypoint_control" type="goal_waypoint_control_key" output="screen"/>
+        <node pkg="turtlebot3_goal_send" name="waypoint_marker" type="waypoint_marker" output="screen"/>
     </launch>
