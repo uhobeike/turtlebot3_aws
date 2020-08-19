@@ -79,15 +79,16 @@ $HOME以下にwaypoint.csvが作られる
 ```
 ~$ roslaunch turtlebot3_gazebo turtlebot3_aws.launch
 ~$ roslaunch turtlebot3_navigation turtlebot3_navigation.launch map_file:=$HOME/map.yaml
-~$ rosrun goal_send 4goal_waypoint_send
-~$ rosrun goal_send goal_waypoint_control_key
+~$ rosrun turtlebot3_goal_send 4goal_waypoint_send
+~$ rosrun turtlebot3_goal_send goal_waypoint_control_key
 ```
+
 5.waypoint_navgationしきい値の変更方法
 ```
 ~$ roslaunch turtlebot3_gazebo turtlebot3_aws.launch
 ~$ roslaunch turtlebot3_navigation turtlebot3_navigation.launch map_file:=$HOME/map.yaml
-~$ rosrun goal_send 4goal_waypoint_send
-~$ rosrun goal_send goal_waypoint_control_key
+~$ rosrun turtlebot3_goal_send 4goal_waypoint_send
+~$ rosrun turtlebot3_goal_send goal_waypoint_control_key
 ```
 の後に
 ```
