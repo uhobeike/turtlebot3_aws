@@ -9,7 +9,7 @@ int main( int argc, char** argv )
   ros::Rate r(1);
   ros::Publisher marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 1);
 
-  uint32_t shape = visualization_msgs::Marker::CUBE;
+  uint32_t shape = visualization_msgs::Marker::SPHERE;
 
   while (ros::ok())
   {
@@ -73,21 +73,7 @@ int main( int argc, char** argv )
 
     // Cycle between different shapes
 // %Tag(CYCLE_SHAPES)%
-    switch (shape)
-    {
-    case visualization_msgs::Marker::CUBE:
-      shape = visualization_msgs::Marker::SPHERE;
-      break;
-    case visualization_msgs::Marker::SPHERE:
-      shape = visualization_msgs::Marker::ARROW;
-      break;
-    case visualization_msgs::Marker::ARROW:
-      shape = visualization_msgs::Marker::CYLINDER;
-      break;
-    case visualization_msgs::Marker::CYLINDER:
-      shape = visualization_msgs::Marker::CUBE;
-      break;
-    }
+
 
     r.sleep();
   }
