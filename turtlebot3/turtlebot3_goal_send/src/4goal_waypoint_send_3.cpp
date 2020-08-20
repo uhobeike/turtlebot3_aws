@@ -1,6 +1,8 @@
 #include <ros/ros.h>
 #include <std_msgs/String.h>
-#include <goal_send_msgs/goal_vector.h>
+#include <geometry_msgs/PoseArray.h>
+
+
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <nav_msgs/Odometry.h>
 #include <move_base_msgs/MoveBaseAction.h>
@@ -127,12 +129,34 @@ void waypoint_nearly_check(vector<vector<string>>& waypoint, vector<double>& est
         point_number++;
     }
 }
+/*
+void waypoint_marker_set(vector<vector<string>>& waypoint_read, goal_send_msgs::goal_vector_2& array)
+{
+    uint16_t vec_cnt_out = 0, vec_cnt_in = 0;
+    for (auto it_t = waypoint_read.begin(); it_t != waypoint_read.end(); ++it_t) 
+    {
+        vec_cnt_in = 0;
+        for (auto it = (*it_t).begin(); it != (*it_t).end(); ++it) 
+        {
+            vec_cnt_in++;
+            if(vec_cnt_in == 5);
+            //array.data.push_back(*it);
 
+        }
+    }
+    
+    
+    cout << stod(waypoint_read[0][0]) << endl;
+    cout << waypoint_read.size() << endl;
+    cout << array;
+
+}
+*/
 int main(int argc, char** argv)
 {   
     ros::init(argc, argv, "goal_4_waypoint");
     ros::NodeHandle nh;
-    ros::Publisher pub_pose;
+    ros::Publisher pub_pose_ini, pub_pose_way;
     ros::Time tmp_time = ros::Time::now();
     nh.setParam("waypoint_area_threshold", 0.2);
 
@@ -140,7 +164,8 @@ int main(int argc, char** argv)
     ros::Subscriber sub_pos = nh.subscribe("amcl_pose", 100,  posi_Callback);
     ros::Subscriber sub_goal = nh.subscribe("move_base/status", 100,  goal_reached_Callback);
 
-    pub_pose = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("initialpose", 2, true);
+    pub_pose_ini = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("initialpose", 2, true);
+    pub_pose_way = nh.advertise<geometry_msgs::PoseArray>("waypoint", 2, true);
 
     geometry_msgs::PoseWithCovarianceStamped initPose;
     initPose.header.stamp = tmp_time; 
@@ -162,9 +187,37 @@ int main(int argc, char** argv)
         {"1.938033","2.178706","0.964381","0.264490"},
         {"0.879312","2.512087","-0.986923","-0.161146","goal"}
     };
-    
 
-    pub_pose.publish(initPose);
+    geometry_msgs::PoseArray pose_array;
+    pose_array.header.stamp = ros::Time::now(); 
+    pose_array.header.frame_id = "map"; 
+    
+    geometry_msgs::Pose pose;
+    pose.position.x = 1.682101;
+    pose.position.y = 0.298596;
+    pose.position.z = 0.3;
+    pose.orientation.z = 0.080469;
+    pose.orientation.w = 0.996750;
+
+    pose_array.poses.push_back(pose);
+    
+    pose.position.x = 2.293195;
+    pose.position.y = 0.385175;
+    pose.position.z = 0.3;
+    pose.orientation.z = 0.052547;
+    pose.orientation.w = 0.998611;
+
+    pose_array.poses.push_back(pose);
+
+    pub_pose_way.publish(pose_array);
+    
+    //array.Pose.orientation.z
+    //std_msgs::Float64MultiArray array;
+    //waypoint_marker_set(waypoint_read, array);
+
+    //cout << array.data_1[0] << endl;
+
+    pub_pose_ini.publish(initPose);
 
     MoveBaseClient ac("move_base", true);
 
