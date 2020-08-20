@@ -10,7 +10,7 @@ project(goal_send_msgs)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
-  std_msgs
+  std_msgs 
   message_generation
 )
 
@@ -26,6 +26,7 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
   FILES
   goal_vector.msg
+  goal_multivector.msg
 )
 
 ## Generate added messages and services with any dependencies listed here

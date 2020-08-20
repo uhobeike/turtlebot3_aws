@@ -1,5 +1,8 @@
 #include <ros/ros.h>
 #include <std_msgs/String.h>
+#include <geometry_msgs/PoseArray.h>
+
+
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <nav_msgs/Odometry.h>
 #include <move_base_msgs/MoveBaseAction.h>
@@ -11,8 +14,6 @@
 #include <string>
 #include <fstream> 
 #include <sstream>
-#include<stdio.h>
-#include<stdlib.h>
 #include <cmath>
 
 using std::vector;
@@ -53,7 +54,7 @@ void goal_key_Callback(const std_msgs::StringConstPtr& msg)
     start_flag = 1;
 }
 
-void posi_Callback(const nav_msgs::Odometry::ConstPtr& msg)
+void posi_Callback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& msg)
 {
     posi_set.at(0) = msg->pose.pose.position.x;
     posi_set.at(1) = msg->pose.pose.position.y;
@@ -110,15 +111,15 @@ void goal_check(vector<vector<string>>& waypoint, int& point_number, int& vec_si
     }
 }
 
-void waypoint_nearly_check(vector<vector<string>>& waypoint, vector<double>& odom, int& point_number, int& goal_point_flag, double& area_threshold)
+void waypoint_nearly_check(vector<vector<string>>& waypoint, vector<double>& estimated_pos, int& point_number, int& goal_point_flag, double& area_threshold)
 {
     double nealy_check_area = 0;
-    double x_way = 0,y_way = 0,x_odm = 0,y_odm = 0;
+    double x_way = 0,y_way = 0,x_posi = 0,y_posi = 0;
     x_way = stod(waypoint[point_number][0]);
     y_way = stod(waypoint[point_number][1]);
-    x_odm = odom[0];
-    y_odm = odom[1];
-    nealy_check_area = sqrt(pow( x_way - x_odm, 2) + pow( y_way - y_odm, 2) );
+    x_posi = estimated_pos[0];
+    y_posi = estimated_pos[1];
+    nealy_check_area = sqrt(pow( x_way - x_posi, 2) + pow( y_way - y_posi, 2) );
     
     if(nealy_check_area <= area_threshold)
     {
@@ -129,19 +130,45 @@ void waypoint_nearly_check(vector<vector<string>>& waypoint, vector<double>& odo
     }
 }
 
+void waypoint_pose_array(vector<vector<string>>& waypoint_read, geometry_msgs::PoseArray& pose_array, geometry_msgs::Pose pose)
+{
+    uint16_t vec_cnt_out = 0, vec_cnt_in = 0;
+    for (auto it_t = waypoint_read.begin(); it_t != waypoint_read.end(); ++it_t) 
+    {
+        vec_cnt_in = 0;
+        for (auto it = (*it_t).begin(); it != (*it_t).end(); ++it) 
+        {
+            vec_cnt_in++;
+            if(vec_cnt_in == 5) break;
+
+            if(vec_cnt_in == 1) pose.position.x = stod(*it);
+            if(vec_cnt_in == 2) pose.position.y = stod(*it);
+            
+            pose.position.z = 0.2;
+            
+            if(vec_cnt_in == 3) pose.orientation.z = stod(*it);
+            if(vec_cnt_in == 4) pose.orientation.w = stod(*it);
+
+        }
+
+        pose_array.poses.push_back(pose);
+    }
+}
+
 int main(int argc, char** argv)
 {   
     ros::init(argc, argv, "goal_4_waypoint");
     ros::NodeHandle nh;
-    ros::Publisher pub_pose;
+    ros::Publisher pub_pose_ini, pub_pose_way;
     ros::Time tmp_time = ros::Time::now();
     nh.setParam("waypoint_area_threshold", 0.2);
 
     ros::Subscriber sub_key = nh.subscribe("goal_key", 1,  goal_key_Callback);
-    ros::Subscriber sub_pos = nh.subscribe("odom", 100,  posi_Callback);
+    ros::Subscriber sub_pos = nh.subscribe("amcl_pose", 100,  posi_Callback);
     ros::Subscriber sub_goal = nh.subscribe("move_base/status", 100,  goal_reached_Callback);
 
-    pub_pose = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("initialpose", 2, true);
+    pub_pose_ini = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("initialpose", 2, true);
+    pub_pose_way = nh.advertise<geometry_msgs::PoseArray>("waypoint", 2, true);
 
     geometry_msgs::PoseWithCovarianceStamped initPose;
     initPose.header.stamp = tmp_time; 
@@ -151,30 +178,29 @@ int main(int argc, char** argv)
     initPose.pose.pose.position.z = 0;
     initPose.pose.pose.orientation.w = 1;
 
-    char *c = getenv("HOME");
-    string HOME = c; 
-    ifstream f_r(HOME + "/waypoint.csv",std::ios::in);
-
-    vector<vector<string>> waypoint_read;
-    string line,field;
-    int vec_num_int = 1;
-
-    waypoint_read.emplace_back();
-
-    while (getline(f_r, line)) 
+    vector<vector<string>> waypoint_read = 
     {
-        istringstream stream(line);
-        while (getline(stream, field, ',') )
-        {
-            waypoint_read[vec_num_int-1].push_back(field);
-        }
+        {"1.682101","0.298596","0.080469","0.996750"},
+        {"2.293195","0.385175","0.052547","0.998611","goal"},
+        {"4.433884","0.630851","0.322288","0.946634"},
+        {"4.545833","1.225776","0.380812","0.924644"},
+        {"5.062553","1.350851","0.999918","-0.012198","goal"},
+        {"3.380071","1.284730","0.987302","0.158811"},
+        {"3.033352","1.867196","0.950085","0.311968","goal"},
+        {"1.938033","2.178706","0.964381","0.264490"},
+        {"0.879312","2.512087","-0.986923","-0.161146","goal"}
+    };
 
-        waypoint_read.resize(++vec_num_int);
-    }
-    waypoint_read.resize(--vec_num_int);
-    waypoint_read.resize(--vec_num_int);
+    geometry_msgs::PoseArray pose_array;
+    geometry_msgs::Pose pose;
+    pose_array.header.stamp = ros::Time::now(); 
+    pose_array.header.frame_id = "map"; 
+    
+    waypoint_pose_array(waypoint_read, pose_array, pose);
 
-    pub_pose.publish(initPose);
+    pub_pose_way.publish(pose_array);
+
+    pub_pose_ini.publish(initPose);
 
     MoveBaseClient ac("move_base", true);
 

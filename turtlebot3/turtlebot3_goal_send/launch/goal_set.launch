@@ -1,0 +1,4 @@
+    <launch>
+        <node pkg="turtlebot3_goal_send" name="waypoint_set" type="waypoint_set" output="screen"/>
+        <include file="$(find turtlebot3_teleop)/launch/turtlebot3_teleop_key.launch"/>
+    </launch>

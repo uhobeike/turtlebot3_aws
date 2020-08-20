@@ -304,6 +304,21 @@ Visualization Manager:
       Topic: /move_base_simple/goal
       Unreliable: false
       Value: true
+    - Alpha: 1
+      Axes Length: 1
+      Axes Radius: 0.100000001
+      Class: rviz/Marker
+      Color: 255; 25; 0
+      Enabled: true
+      Head Length: 0.300000012
+      Head Radius: 0.100000001
+      Name: Waypoint
+      Shaft Length: 0.5
+      Shaft Radius: 0.0500000007
+      Shape: SPHERE
+      Topic: /visualization_marker
+      Unreliable: false
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -325,7 +340,7 @@ Visualization Manager:
   Views:
     Current:
       Angle: -1.57079637
-      Class: rviz/TopDownOrtho
+      Class: rviz/XYOrbit
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
@@ -336,9 +351,10 @@ Visualization Manager:
       Near Clip Distance: 0.00999999978
       Scale: 100
       Target Frame: <Fixed Frame>
-      Value: TopDownOrtho (rviz)
+      Value: XYOrbit (rviz)
       X: 0
       Y: 0
+      Z: 0
     Saved: ~
 Window Geometry:
   Displays:
