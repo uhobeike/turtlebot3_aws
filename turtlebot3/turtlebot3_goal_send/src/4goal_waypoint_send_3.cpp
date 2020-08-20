@@ -129,8 +129,8 @@ void waypoint_nearly_check(vector<vector<string>>& waypoint, vector<double>& est
         point_number++;
     }
 }
-/*
-void waypoint_marker_set(vector<vector<string>>& waypoint_read, goal_send_msgs::goal_vector_2& array)
+
+void waypoint_pose_array(vector<vector<string>>& waypoint_read, geometry_msgs::PoseArray& pose_array, geometry_msgs::Pose pose)
 {
     uint16_t vec_cnt_out = 0, vec_cnt_in = 0;
     for (auto it_t = waypoint_read.begin(); it_t != waypoint_read.end(); ++it_t) 
@@ -139,19 +139,22 @@ void waypoint_marker_set(vector<vector<string>>& waypoint_read, goal_send_msgs::
         for (auto it = (*it_t).begin(); it != (*it_t).end(); ++it) 
         {
             vec_cnt_in++;
-            if(vec_cnt_in == 5);
-            //array.data.push_back(*it);
+            if(vec_cnt_in == 5) break;
+
+            if(vec_cnt_in == 1) pose.position.x = stod(*it);
+            if(vec_cnt_in == 2) pose.position.y = stod(*it);
+            
+            pose.position.z = 0.2;
+            
+            if(vec_cnt_in == 3) pose.orientation.z = stod(*it);
+            if(vec_cnt_in == 4) pose.orientation.w = stod(*it);
 
         }
-    }
-    
-    
-    cout << stod(waypoint_read[0][0]) << endl;
-    cout << waypoint_read.size() << endl;
-    cout << array;
 
+        pose_array.poses.push_back(pose);
+    }
 }
-*/
+
 int main(int argc, char** argv)
 {   
     ros::init(argc, argv, "goal_4_waypoint");
@@ -189,33 +192,13 @@ int main(int argc, char** argv)
     };
 
     geometry_msgs::PoseArray pose_array;
+    geometry_msgs::Pose pose;
     pose_array.header.stamp = ros::Time::now(); 
     pose_array.header.frame_id = "map"; 
     
-    geometry_msgs::Pose pose;
-    pose.position.x = 1.682101;
-    pose.position.y = 0.298596;
-    pose.position.z = 0.3;
-    pose.orientation.z = 0.080469;
-    pose.orientation.w = 0.996750;
-
-    pose_array.poses.push_back(pose);
-    
-    pose.position.x = 2.293195;
-    pose.position.y = 0.385175;
-    pose.position.z = 0.3;
-    pose.orientation.z = 0.052547;
-    pose.orientation.w = 0.998611;
-
-    pose_array.poses.push_back(pose);
+    waypoint_pose_array(waypoint_read, pose_array, pose);
 
     pub_pose_way.publish(pose_array);
-    
-    //array.Pose.orientation.z
-    //std_msgs::Float64MultiArray array;
-    //waypoint_marker_set(waypoint_read, array);
-
-    //cout << array.data_1[0] << endl;
 
     pub_pose_ini.publish(initPose);
 
