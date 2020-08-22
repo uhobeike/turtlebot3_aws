@@ -7,8 +7,8 @@
 #include <string>
 #include <iterator>
 #include <fstream> 
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 using std::vector;
 using std::string;
