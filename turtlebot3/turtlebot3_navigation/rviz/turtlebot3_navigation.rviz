@@ -20,6 +20,7 @@ Panels:
     Expanded:
       - /2D Pose Estimate1
       - /2D Nav Goal1
+      - /2D Pose Estimate2
     Name: Tool Properties
     Splitter Ratio: 0.588679016
   - Class: rviz/Views
@@ -307,16 +308,15 @@ Visualization Manager:
     - Alpha: 1
       Axes Length: 1
       Axes Radius: 0.100000001
-      Class: rviz/Marker
-      Color: 255; 25; 0
+      Class: rviz/PoseArray
+      Color: 44; 37; 243
       Enabled: true
       Head Length: 0.300000012
       Head Radius: 0.100000001
-      Name: Waypoint
-      Shaft Length: 0.5
-      Shaft Radius: 0.0500000007
-      Shape: SPHERE
-      Topic: /visualization_marker
+      Name: Waypoint_Pose
+      Shaft Length: 0.2
+      Shape: ARROW
+      Topic: /waypoint
       Unreliable: false
       Value: true
   Enabled: true
@@ -335,6 +335,8 @@ Visualization Manager:
       Topic: /initialpose
     - Class: rviz/SetGoal
       Topic: /move_base_simple/goal
+    - Class: rviz/SetInitialPose
+      Topic: /waypoint_set
     - Class: rviz/Measure
   Value: true
   Views:
