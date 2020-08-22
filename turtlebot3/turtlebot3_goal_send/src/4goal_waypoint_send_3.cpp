@@ -1,8 +1,6 @@
 #include <ros/ros.h>
 #include <std_msgs/String.h>
 #include <geometry_msgs/PoseArray.h>
-
-
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <nav_msgs/Odometry.h>
 #include <move_base_msgs/MoveBaseAction.h>

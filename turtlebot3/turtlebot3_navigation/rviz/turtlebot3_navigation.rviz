@@ -20,6 +20,7 @@ Panels:
     Expanded:
       - /2D Pose Estimate1
       - /2D Nav Goal1
+      - /2D Pose Estimate2
     Name: Tool Properties
     Splitter Ratio: 0.588679016
   - Class: rviz/Views
@@ -334,6 +335,8 @@ Visualization Manager:
       Topic: /initialpose
     - Class: rviz/SetGoal
       Topic: /move_base_simple/goal
+    - Class: rviz/SetInitialPose
+      Topic: /waypoint_set
     - Class: rviz/Measure
   Value: true
   Views:
