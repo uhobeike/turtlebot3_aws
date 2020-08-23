@@ -24,11 +24,11 @@ class waypoint_rviz
     void waypoint_Callback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& pose);
     void control_Callback(const std_msgs::StringConstPtr& command);
 
-    void waypoint_csv(vector<string>& posi_set, vector<vector<string>>& csv_array);
-    void way_point_remove(vector<vector<string>>& waypoint_remove, uint16_t &waypoint_nunber);
-    void way_point_goal_set(vector<vector<string>>& waypoint_goal, uint16_t &waypoint_nunber);
-    void way_point_corner_set(vector<vector<string>>& waypoint_corner, uint16_t &waypoint_nunber);
-    void finish_and_file_write_waypoint(vector<vector<string>>& waypoint_file_write, uint16_t &waypoint_nunber);
+    void waypoint_csv_(vector<string>& posi_set, vector<vector<string>>& csv_array, uint16_t &waypoint_number);
+    void way_point_remove_(vector<vector<string>>& waypoint_remove, geometry_msgs::PoseArray& pose_array, uint16_t &waypoint_number);
+    void way_point_goal_set_(vector<vector<string>>& waypoint_goal, uint16_t &waypoint_number);
+    void way_point_corner_set_(vector<vector<string>>& waypoint_corner, uint16_t &waypoint_number);
+    void finish_and_file_write_waypoint_(vector<vector<string>>& waypoint_file_write, uint16_t &waypoint_number);
     
     ros::NodeHandle nh_;
     ros::Publisher publisher_;
@@ -37,11 +37,11 @@ class waypoint_rviz
     geometry_msgs::PoseArray pose_array_;
     geometry_msgs::Pose pose_rviz_;
 
-    vector<string> posi_set;
-    vector<vector<string>> csv_array;
+    vector<string> posi_set_;
+    vector<vector<string>> csv_array_;
 
-    uint16_t waypoint_number;
-    uint16_t waypoint_index;
+    uint16_t waypoint_number_;
+    uint16_t waypoint_index_;
 
   public:
     waypoint_rviz();
@@ -54,12 +54,12 @@ waypoint_rviz::waypoint_rviz() : nh_("")
   subscriber_control_ = nh_.subscribe("waypoint_control", 1, &waypoint_rviz::control_Callback, this);
   publisher_ = nh_.advertise<geometry_msgs::PoseArray>("waypoint", 1, true);
 
-  posi_set = 
+  posi_set_ = 
   {
     "0","0","0","0"
   };
 
-  waypoint_number = 0;
+  waypoint_number_ = 0;
 }
 
 void waypoint_rviz::waypoint_Callback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& pose)
@@ -77,80 +77,77 @@ void waypoint_rviz::waypoint_Callback(const geometry_msgs::PoseWithCovarianceSta
 
   publisher_.publish(pose_array_);
 
-  posi_set.at(0) = to_string(pose->pose.pose.position.x);
-  posi_set.at(1) = to_string(pose->pose.pose.position.y);
-  posi_set.at(2) = to_string(pose->pose.pose.orientation.z);
-  posi_set.at(3) = to_string(pose->pose.pose.orientation.w);
+  posi_set_.at(0) = to_string(pose->pose.pose.position.x);
+  posi_set_.at(1) = to_string(pose->pose.pose.position.y);
+  posi_set_.at(2) = to_string(pose->pose.pose.orientation.z);
+  posi_set_.at(3) = to_string(pose->pose.pose.orientation.w);
 
-  waypoint_csv(posi_set, csv_array);
+  waypoint_csv_(posi_set_, csv_array_, waypoint_number_);
 }
 
 void waypoint_rviz::control_Callback(const std_msgs::StringConstPtr& command)
 {
   if(command->data == "remove")
   {
-    way_point_remove(csv_array, waypoint_number);
+    way_point_remove_(csv_array_, pose_array_, waypoint_number_);
   }
 
   else if(command->data == "goal")
   {
-    way_point_goal_set(csv_array, waypoint_number);
+    way_point_goal_set_(csv_array_, waypoint_number_);
   }
 
   else if(command->data == "corner")
   {
-    way_point_corner_set(csv_array, waypoint_number);
+    way_point_corner_set_(csv_array_, waypoint_number_);
   }
 
   else if(command->data == "finish")
   {
-    finish_and_file_write_waypoint(csv_array, waypoint_number);
+    finish_and_file_write_waypoint_(csv_array_, waypoint_number_);
   }
 }
 
-void waypoint_rviz::waypoint_csv(vector<string>& posi_set, vector<vector<string>>& csv_array)
+void waypoint_rviz::waypoint_csv_(vector<string>& posi_set, vector<vector<string>>& csv_array, uint16_t &waypoint_number)
 {
   csv_array.push_back(posi_set);
   waypoint_number++;
 
   cout << csv_array.size() << endl;
-  cout << waypoint_number << endl;
+  cout << waypoint_number_ << endl;
 }
 
-void waypoint_rviz::way_point_remove(vector<vector<string>>& waypoint_remove, uint16_t &waypoint_nunber)
+void waypoint_rviz::way_point_remove_(vector<vector<string>>& waypoint_remove, geometry_msgs::PoseArray& pose_array, uint16_t &waypoint_number)
 {
   ROS_INFO("way_point_remove");
 
-  if(0 < waypoint_nunber)
+  if(0 < waypoint_number)
   {
-    waypoint_nunber--;
-    waypoint_remove.resize(waypoint_nunber);
-    pose_array_.poses.resize(waypoint_nunber);
+    waypoint_number--;
+    waypoint_remove.resize(waypoint_number);
+    pose_array_.poses.resize(waypoint_number);
   }
-  cout << csv_array.size() << endl;
+  cout << csv_array_.size() << endl;
   cout << waypoint_number << endl;
 
   publisher_.publish(pose_array_);
 }
 
-void waypoint_rviz::way_point_goal_set(vector<vector<string>>& waypoint_goal, uint16_t &waypoint_nunber)
+void waypoint_rviz::way_point_goal_set_(vector<vector<string>>& waypoint_goal, uint16_t &waypoint_number)
 {
-  uint16_t array_number = waypoint_nunber - 1;
+  uint16_t array_number = waypoint_number - 1;
   waypoint_goal[array_number].push_back("goal");
 }
 
-void waypoint_rviz::way_point_corner_set(vector<vector<string>>& waypoint_corner, uint16_t &waypoint_nunber)
+void waypoint_rviz::way_point_corner_set_(vector<vector<string>>& waypoint_corner, uint16_t &waypoint_number)
 {
-  uint16_t array_number = waypoint_nunber - 1;
+  uint16_t array_number = waypoint_number - 1;
   waypoint_corner[array_number].push_back("corner");
 }
 
-void waypoint_rviz::finish_and_file_write_waypoint(vector<vector<string>>& waypoint_file_write, uint16_t &waypoint_nunber)
+void waypoint_rviz::finish_and_file_write_waypoint_(vector<vector<string>>& waypoint_file_write, uint16_t &waypoint_number)
 {
     ROS_INFO("finish_and_file_write_waypoint q(^_^)p");
-
-    cout << csv_array.size() << endl;
-    cout << waypoint_number << endl;
 
     char *c = getenv("HOME");
     string HOME = c; 
