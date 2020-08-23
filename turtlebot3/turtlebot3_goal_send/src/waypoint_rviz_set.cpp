@@ -24,9 +24,11 @@ class waypoint_rviz
     void waypoint_Callback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& pose);
     void control_Callback(const std_msgs::StringConstPtr& command);
 
-    void waypoint_csv(vector<float>& posi_set, vector<vector<float>>& csv_array);
-    void way_point_remove(vector<vector<float>>& waypoint_remove, uint16_t &waypoint_nunber);
-    void finish_and_file_write_waypoint(vector<vector<float>>& waypoint_file_write, uint16_t &waypoint_nunber);
+    void waypoint_csv(vector<string>& posi_set, vector<vector<string>>& csv_array);
+    void way_point_remove(vector<vector<string>>& waypoint_remove, uint16_t &waypoint_nunber);
+    void way_point_goal_set(vector<vector<string>>& waypoint_goal, uint16_t &waypoint_nunber);
+    void way_point_corner_set(vector<vector<string>>& waypoint_corner, uint16_t &waypoint_nunber);
+    void finish_and_file_write_waypoint(vector<vector<string>>& waypoint_file_write, uint16_t &waypoint_nunber);
     
     ros::NodeHandle nh_;
     ros::Publisher publisher_;
@@ -35,8 +37,8 @@ class waypoint_rviz
     geometry_msgs::PoseArray pose_array_;
     geometry_msgs::Pose pose_rviz_;
 
-    vector<float> posi_set;
-    vector<vector<float>> csv_array;
+    vector<string> posi_set;
+    vector<vector<string>> csv_array;
 
     uint16_t waypoint_number;
     uint16_t waypoint_index;
@@ -54,7 +56,7 @@ waypoint_rviz::waypoint_rviz() : nh_("")
 
   posi_set = 
   {
-    0,0,0,0
+    "0","0","0","0"
   };
 
   waypoint_number = 0;
@@ -75,10 +77,10 @@ void waypoint_rviz::waypoint_Callback(const geometry_msgs::PoseWithCovarianceSta
 
   publisher_.publish(pose_array_);
 
-  posi_set.at(0) = pose->pose.pose.position.x;
-  posi_set.at(1) = pose->pose.pose.position.y;
-  posi_set.at(2) = pose->pose.pose.orientation.z;
-  posi_set.at(3) = pose->pose.pose.orientation.w;
+  posi_set.at(0) = to_string(pose->pose.pose.position.x);
+  posi_set.at(1) = to_string(pose->pose.pose.position.y);
+  posi_set.at(2) = to_string(pose->pose.pose.orientation.z);
+  posi_set.at(3) = to_string(pose->pose.pose.orientation.w);
 
   waypoint_csv(posi_set, csv_array);
 }
@@ -92,14 +94,12 @@ void waypoint_rviz::control_Callback(const std_msgs::StringConstPtr& command)
 
   else if(command->data == "goal")
   {
-    finish_and_file_write_waypoint(csv_array, waypoint_number);
-    cout << "b" << endl;
+    way_point_goal_set(csv_array, waypoint_number);
   }
 
   else if(command->data == "corner")
   {
-    finish_and_file_write_waypoint(csv_array, waypoint_number);
-    cout << "c" << endl;
+    way_point_corner_set(csv_array, waypoint_number);
   }
 
   else if(command->data == "finish")
@@ -108,7 +108,7 @@ void waypoint_rviz::control_Callback(const std_msgs::StringConstPtr& command)
   }
 }
 
-void waypoint_rviz::waypoint_csv(vector<float>& posi_set, vector<vector<float>>& csv_array)
+void waypoint_rviz::waypoint_csv(vector<string>& posi_set, vector<vector<string>>& csv_array)
 {
   csv_array.push_back(posi_set);
   waypoint_number++;
@@ -117,7 +117,7 @@ void waypoint_rviz::waypoint_csv(vector<float>& posi_set, vector<vector<float>>&
   cout << waypoint_number << endl;
 }
 
-void waypoint_rviz::way_point_remove(vector<vector<float>>& waypoint_remove, uint16_t &waypoint_nunber)
+void waypoint_rviz::way_point_remove(vector<vector<string>>& waypoint_remove, uint16_t &waypoint_nunber)
 {
   ROS_INFO("way_point_remove");
 
@@ -133,7 +133,18 @@ void waypoint_rviz::way_point_remove(vector<vector<float>>& waypoint_remove, uin
   publisher_.publish(pose_array_);
 }
 
-void waypoint_rviz::finish_and_file_write_waypoint(vector<vector<float>>& waypoint_file_write, uint16_t &waypoint_nunber)
+void waypoint_rviz::way_point_goal_set(vector<vector<string>>& waypoint_goal, uint16_t &waypoint_nunber)
+{
+  uint16_t array_number = waypoint_nunber - 1;
+  //way_point_goal[array_number][4].push_back();
+}
+
+void waypoint_rviz::way_point_corner_set(vector<vector<string>>& waypoint_corner, uint16_t &waypoint_nunber)
+{
+  waypoint_corner[waypoint_nunber][4];
+}
+
+void waypoint_rviz::finish_and_file_write_waypoint(vector<vector<string>>& waypoint_file_write, uint16_t &waypoint_nunber)
 {
     ROS_INFO("finish_and_file_write_waypoint q(^_^)p");
 
