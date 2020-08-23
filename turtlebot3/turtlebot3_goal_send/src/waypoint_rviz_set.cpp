@@ -3,6 +3,8 @@
 #include <geometry_msgs/PoseArray.h>
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <nav_msgs/Odometry.h>
+#include <visualization_msgs/Marker.h>
+
 #include <vector>
 #include <string>
 #include <iterator>
@@ -12,7 +14,7 @@
 
 using std::vector;
 using std::string;
-using std::stoi;
+using std::stof;
 using std::to_string;
 using std::ofstream;
 using std::cout;
@@ -21,6 +23,23 @@ using std::endl;
 class waypoint_rviz
 {
   private:
+    ros::NodeHandle nh_;
+    ros::Publisher way_pub_, marker_pub;
+    ros::Subscriber subscriber_set_, subscriber_control_;
+
+    geometry_msgs::PoseArray pose_array_;
+    geometry_msgs::Pose pose_rviz_;
+
+    visualization_msgs::Marker marker_;
+
+    vector<string> posi_set_;
+    vector<vector<string>> csv_array_;
+
+    uint16_t waypoint_number_;
+    uint16_t waypoint_index_;
+    uint32_t shape_;
+    bool marker_flag_;
+
     void waypoint_Callback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& pose);
     void control_Callback(const std_msgs::StringConstPtr& command);
 
@@ -29,19 +48,7 @@ class waypoint_rviz
     void way_point_goal_set_(vector<vector<string>>& waypoint_goal, uint16_t &waypoint_number);
     void way_point_corner_set_(vector<vector<string>>& waypoint_corner, uint16_t &waypoint_number);
     void finish_and_file_write_waypoint_(vector<vector<string>>& waypoint_file_write, uint16_t &waypoint_number);
-    
-    ros::NodeHandle nh_;
-    ros::Publisher publisher_;
-    ros::Subscriber subscriber_set_, subscriber_control_;
-
-    geometry_msgs::PoseArray pose_array_;
-    geometry_msgs::Pose pose_rviz_;
-
-    vector<string> posi_set_;
-    vector<vector<string>> csv_array_;
-
-    uint16_t waypoint_number_;
-    uint16_t waypoint_index_;
+    void waypoint_marker_(visualization_msgs::Marker& marker, vector<vector<string>>& waypoint_goal_corner, bool &marker_flag, uint16_t &waypoint_number);
 
   public:
     waypoint_rviz();
@@ -52,7 +59,9 @@ waypoint_rviz::waypoint_rviz() : nh_("")
 {
   subscriber_set_ = nh_.subscribe("waypoint_set", 1, &waypoint_rviz::waypoint_Callback, this);
   subscriber_control_ = nh_.subscribe("waypoint_control", 1, &waypoint_rviz::control_Callback, this);
-  publisher_ = nh_.advertise<geometry_msgs::PoseArray>("waypoint", 1, true);
+
+  way_pub_ = nh_.advertise<geometry_msgs::PoseArray>("waypoint", 1, true);
+  marker_pub = nh_.advertise<visualization_msgs::Marker>("visualization_marker", 1, true);
 
   posi_set_ = 
   {
@@ -60,6 +69,9 @@ waypoint_rviz::waypoint_rviz() : nh_("")
   };
 
   waypoint_number_ = 0;
+  marker_flag_ = 0;
+
+  shape_ = visualization_msgs::Marker::SPHERE;
 }
 
 void waypoint_rviz::waypoint_Callback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& pose)
@@ -75,7 +87,7 @@ void waypoint_rviz::waypoint_Callback(const geometry_msgs::PoseWithCovarianceSta
 
   pose_array_.poses.push_back(pose_rviz_);
 
-  publisher_.publish(pose_array_);
+  way_pub_.publish(pose_array_);
 
   posi_set_.at(0) = to_string(pose->pose.pose.position.x);
   posi_set_.at(1) = to_string(pose->pose.pose.position.y);
@@ -130,19 +142,25 @@ void waypoint_rviz::way_point_remove_(vector<vector<string>>& waypoint_remove, g
   cout << csv_array_.size() << endl;
   cout << waypoint_number << endl;
 
-  publisher_.publish(pose_array_);
+  way_pub_.publish(pose_array_);
 }
 
 void waypoint_rviz::way_point_goal_set_(vector<vector<string>>& waypoint_goal, uint16_t &waypoint_number)
 {
   uint16_t array_number = waypoint_number - 1;
   waypoint_goal[array_number].push_back("goal");
+
+  marker_flag_ = 0;
+  waypoint_marker_(marker_, waypoint_goal, marker_flag_, waypoint_number);
 }
 
 void waypoint_rviz::way_point_corner_set_(vector<vector<string>>& waypoint_corner, uint16_t &waypoint_number)
 {
   uint16_t array_number = waypoint_number - 1;
   waypoint_corner[array_number].push_back("corner");
+  
+  marker_flag_ = 1;
+  waypoint_marker_(marker_, waypoint_corner, marker_flag_, waypoint_number);
 }
 
 void waypoint_rviz::finish_and_file_write_waypoint_(vector<vector<string>>& waypoint_file_write, uint16_t &waypoint_number)
@@ -155,18 +173,64 @@ void waypoint_rviz::finish_and_file_write_waypoint_(vector<vector<string>>& wayp
 
     for (auto it_t = waypoint_file_write.begin(); it_t != waypoint_file_write.end(); ++it_t) 
     {
-        for (auto it = (*it_t).begin(); it != (*it_t).end(); ++it) 
-        {
-            f_w << *it << ",";
-            cout << *it << endl;
-        } 
+      for (auto it = (*it_t).begin(); it != (*it_t).end(); ++it) 
+      {
+          f_w << *it << ",";
+          cout << *it << endl;
+      } 
 
-        f_w << endl;
+      f_w << endl;
     }
     
     f_w.close();
 
     ros::shutdown();
+}
+
+void waypoint_rviz::waypoint_marker_(visualization_msgs::Marker& marker, vector<vector<string>>& waypoint_goal_corner, bool &marker_flag, uint16_t &waypoint_number)
+{
+  uint16_t array_number = waypoint_number - 1;
+
+  marker.header.frame_id = "/map";
+  marker.header.stamp = ros::Time::now();
+
+  marker.ns = "basic_shapes";
+  marker.id = 0;
+
+  marker.type = shape_;
+
+  marker.action = visualization_msgs::Marker::ADD;
+
+  marker.pose.position.x = stof(waypoint_goal_corner[array_number][0]);
+  marker.pose.position.y = stof(waypoint_goal_corner[array_number][1]);
+  marker.pose.position.z = 0.2;
+
+  marker.pose.orientation.z = stof(waypoint_goal_corner[array_number][2]);
+  marker.pose.orientation.w = stof(waypoint_goal_corner[array_number][3]);
+
+  marker.scale.x = 0.3;
+  marker.scale.y = 0.3;
+  marker.scale.z = 0.3;
+
+  if(!marker_flag)
+  {
+    marker.color.r = 0.0f;
+    marker.color.g = 1.0f;
+    marker.color.b = 0.0f;
+    marker.color.a = 1.0;
+  }
+
+  else if(marker_flag)
+  {
+    marker.color.r = 1.0f;
+    marker.color.g = 0.0f;
+    marker.color.b = 0.0f;
+    marker.color.a = 1.0;
+  }
+
+  marker.lifetime = ros::Duration();
+
+  marker_pub.publish(marker);
 }
 
 int main(int argc, char** argv)
