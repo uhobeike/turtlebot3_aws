@@ -121,9 +121,16 @@ void waypoint_rviz::way_point_remove(vector<vector<float>>& waypoint_remove, uin
 {
   ROS_INFO("way_point_remove");
 
-  if(0 < waypoint_nunber) waypoint_remove.resize(--waypoint_nunber);
+  if(0 < waypoint_nunber)
+  {
+    waypoint_nunber--;
+    waypoint_remove.resize(waypoint_nunber);
+    pose_array_.poses.resize(waypoint_nunber);
+  }
   cout << csv_array.size() << endl;
   cout << waypoint_number << endl;
+
+  publisher_.publish(pose_array_);
 }
 
 void waypoint_rviz::finish_and_file_write_waypoint(vector<vector<float>>& waypoint_file_write, uint16_t &waypoint_nunber)
