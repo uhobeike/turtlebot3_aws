@@ -136,12 +136,13 @@ void waypoint_rviz::way_point_remove(vector<vector<string>>& waypoint_remove, ui
 void waypoint_rviz::way_point_goal_set(vector<vector<string>>& waypoint_goal, uint16_t &waypoint_nunber)
 {
   uint16_t array_number = waypoint_nunber - 1;
-  //way_point_goal[array_number][4].push_back();
+  waypoint_goal[array_number].push_back("goal");
 }
 
 void waypoint_rviz::way_point_corner_set(vector<vector<string>>& waypoint_corner, uint16_t &waypoint_nunber)
 {
-  waypoint_corner[waypoint_nunber][4];
+  uint16_t array_number = waypoint_nunber - 1;
+  waypoint_corner[array_number].push_back("corner");
 }
 
 void waypoint_rviz::finish_and_file_write_waypoint(vector<vector<string>>& waypoint_file_write, uint16_t &waypoint_nunber)
