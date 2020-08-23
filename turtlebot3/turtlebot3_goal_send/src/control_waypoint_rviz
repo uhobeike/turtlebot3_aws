@@ -14,19 +14,13 @@ Control Your TurtleBot3!
 ---------------------------
 Moving around:
       
-      f  g  j  
-    c
-
+    s  f  g  j  
+      c
+s   : waypoint_rviz node RUN
 j   : waypoint add remove
 g   : goal set
 c   : corner
-f   : finish and file write waypoint
-
-q   : kill this node
-"""
-
-e = """
-Communications Failed
+f   : finish and file write waypoint and kill_node
 """
 
 def getKey():
@@ -82,34 +76,40 @@ if __name__=="__main__":
     while(1):
         key = getKey()
 
-        if key == 'f' :
-            str = "finish and file_write_waypoint"
-            pub_way.publish(str)
-            rospy.loginfo("finish and file write waypoint \(^_^)/")
-            kill_node('waypoint_rviz')
-            rospy.loginfo("kill_mode waypoint_rviz")
-            rospy.loginfo("Shutdown now ('o')/ bye bye~~~")
-            sys.exit(0)
-        elif key == 'g' :
-            str = "goal_set"
-            pub_way.publish(str)
-            rospy.loginfo("goal_set..............")
+        if key == 's' :
+          global proc
+          find_node('waypoint_rviz')
+          if(flag == 0):
+            proc = Popen(["rosrun", "turtlebot3_goal_send", "waypoint_rviz"])
+            rospy.loginfo("waypoint_rviz node RUN")
+          elif(flag == 1):
+            rospy.loginfo("already waypoint_rviz node RUN")
+            
         elif key == 'j' :
-            str = "way_point_add"
-            pub_way.publish(str)
-            rospy.loginfo("way_point_add.........")
-        elif key == 'k' :
-            str = "way_point_remove"
-            pub_way.publish(str)
-            rospy.loginfo("way_point_remove.........")
-        elif key == 's' :
-            global proc
-            find_node('waypoint_rviz')
-            if(flag == 0):
-              proc = Popen(["rosrun", "turtlebot3_goal_send", "waypoint_rviz"])
-              rospy.loginfo("waypoint_rviz node RUN")
-            elif(flag == 1):
-              rospy.loginfo("already waypoint_rviz node RUN")
+          str = "remove"
+          pub_way.publish(str)
+          rospy.loginfo("way_point_remove.........")
+
+        elif key == 'g' :
+          str = "goal"
+          pub_way.publish(str)
+          rospy.loginfo("goal_set..............")
+
+        elif key == 'c' :
+          str = "corner"
+          pub_way.publish(str)
+          rospy.loginfo("corner_set..............")
+
+
+        elif key == 'f' :
+          str = "finish"
+          pub_way.publish(str)
+          rospy.loginfo("finish and file write waypoint \(^_^)/")
+          kill_node('waypoint_rviz')
+          rospy.loginfo("kill_mode waypoint_rviz")
+          rospy.loginfo("Shutdown now ('o')/ bye bye~~~")
+          sys.exit(0)
+
         else:
             if (key == '\x03'):
                 break
