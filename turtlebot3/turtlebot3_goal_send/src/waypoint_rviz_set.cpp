@@ -38,7 +38,7 @@ class waypoint_rviz
     vector<float> posi_set;
     vector<vector<float>> csv_array;
 
-    uint16_t waypoint_nunber;
+    uint16_t waypoint_number;
     uint16_t waypoint_index;
 
   public:
@@ -57,7 +57,7 @@ waypoint_rviz::waypoint_rviz() : nh_("")
     0,0,0,0
   };
 
-  waypoint_nunber = 1;
+  waypoint_number = 0;
 }
 
 void waypoint_rviz::waypoint_Callback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& pose)
@@ -85,47 +85,53 @@ void waypoint_rviz::waypoint_Callback(const geometry_msgs::PoseWithCovarianceSta
 
 void waypoint_rviz::control_Callback(const std_msgs::StringConstPtr& command)
 {
-  if(command->data == "j")
+  if(command->data == "remove")
   {
-    way_point_remove(csv_array, waypoint_nunber);
+    way_point_remove(csv_array, waypoint_number);
   }
 
-  else if(command->data == "c")
+  else if(command->data == "goal")
   {
-    finish_and_file_write_waypoint(csv_array, waypoint_nunber);
+    finish_and_file_write_waypoint(csv_array, waypoint_number);
+    cout << "b" << endl;
   }
 
-  else if(command->data == "g")
+  else if(command->data == "corner")
   {
-    finish_and_file_write_waypoint(csv_array, waypoint_nunber);
+    finish_and_file_write_waypoint(csv_array, waypoint_number);
+    cout << "c" << endl;
   }
 
-  else if(command->data == "f")
+  else if(command->data == "finish")
   {
-    finish_and_file_write_waypoint(csv_array, waypoint_nunber);
+    finish_and_file_write_waypoint(csv_array, waypoint_number);
   }
 }
 
 void waypoint_rviz::waypoint_csv(vector<float>& posi_set, vector<vector<float>>& csv_array)
 {
   csv_array.push_back(posi_set);
+  waypoint_number++;
 
-  //cout << csv_array[0][0] << endl;
+  cout << csv_array.size() << endl;
+  cout << waypoint_number << endl;
 }
 
 void waypoint_rviz::way_point_remove(vector<vector<float>>& waypoint_remove, uint16_t &waypoint_nunber)
 {
-    ROS_INFO("way_point_remove");
+  ROS_INFO("way_point_remove");
 
-    waypoint_remove.resize(--waypoint_nunber);
-    waypoint_remove.resize(--waypoint_nunber);
+  if(0 < waypoint_nunber) waypoint_remove.resize(--waypoint_nunber);
+  cout << csv_array.size() << endl;
+  cout << waypoint_number << endl;
 }
 
 void waypoint_rviz::finish_and_file_write_waypoint(vector<vector<float>>& waypoint_file_write, uint16_t &waypoint_nunber)
 {
     ROS_INFO("finish_and_file_write_waypoint q(^_^)p");
 
-    waypoint_file_write.resize(waypoint_nunber);
+    cout << csv_array.size() << endl;
+    cout << waypoint_number << endl;
 
     char *c = getenv("HOME");
     string HOME = c; 
@@ -136,6 +142,7 @@ void waypoint_rviz::finish_and_file_write_waypoint(vector<vector<float>>& waypoi
         for (auto it = (*it_t).begin(); it != (*it_t).end(); ++it) 
         {
             f_w << *it << ",";
+            cout << *it << endl;
         } 
 
         f_w << endl;

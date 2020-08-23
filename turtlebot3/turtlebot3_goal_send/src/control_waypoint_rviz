@@ -88,25 +88,24 @@ if __name__=="__main__":
         elif key == 'j' :
           str = "remove"
           pub_way.publish(str)
-          rospy.loginfo("way_point_remove.........")
+          rospy.loginfo("way_point_remove......")
 
         elif key == 'g' :
           str = "goal"
           pub_way.publish(str)
-          rospy.loginfo("goal_set..............")
+          rospy.loginfo("goal_set...........")
 
         elif key == 'c' :
           str = "corner"
           pub_way.publish(str)
-          rospy.loginfo("corner_set..............")
+          rospy.loginfo("corner_set...........")
 
 
         elif key == 'f' :
           str = "finish"
           pub_way.publish(str)
-          rospy.loginfo("finish and file write waypoint \(^_^)/")
-          kill_node('waypoint_rviz')
-          rospy.loginfo("kill_mode waypoint_rviz")
+          #kill_node('waypoint_rviz')
+          rospy.loginfo("kill_node waypoint_rviz")
           rospy.loginfo("Shutdown now ('o')/ bye bye~~~")
           sys.exit(0)
 
