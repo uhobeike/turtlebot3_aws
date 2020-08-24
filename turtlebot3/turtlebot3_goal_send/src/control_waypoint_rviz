@@ -19,7 +19,7 @@ Moving around:
 s   : waypoint_rviz node RUN
 j   : waypoint add remove
 g   : goal set
-c   : corner
+c   : corner set
 f   : finish and file write waypoint and kill_node
 """
 
@@ -83,17 +83,17 @@ if __name__=="__main__":
             proc = Popen(["rosrun", "turtlebot3_goal_send", "waypoint_rviz"])
             rospy.loginfo("waypoint_rviz node RUN")
           elif(flag == 1):
-            rospy.loginfo("already waypoint_rviz node RUN")
+            rospy.loginfo("already waypoint_rviz node RUN\n")
             
         elif key == 'j' :
           str = "remove"
           pub_way.publish(str)
-          rospy.loginfo("way_point_remove......")
+          rospy.loginfo("way_point_remove...")
 
         elif key == 'g' :
           str = "goal"
           pub_way.publish(str)
-          rospy.loginfo("goal_set...........")
+          rospy.loginfo("goal_set......")
 
         elif key == 'c' :
           str = "corner"
