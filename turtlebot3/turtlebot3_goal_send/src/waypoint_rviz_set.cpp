@@ -221,17 +221,17 @@ void waypoint_rviz::waypoint_marker_(visualization_msgs::Marker& marker, geometr
 
   if(!marker_mode)
   {
-    point_color.r = 0.0f;
-    point_color.g = 1.0f;
+    point_color.r = 1.0f;
+    point_color.g = 0.0f;
     point_color.b = 0.0f;
     point_color.a = 1.0;
   }
 
   else if(marker_mode)
   {
-    point_color.r = 1.0f;
+    point_color.r = 0.0f;
     point_color.g = 0.0f;
-    point_color.b = 0.0f;
+    point_color.b = 1.0f;
     point_color.a = 1.0;
   }
 
