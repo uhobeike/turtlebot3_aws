@@ -126,10 +126,10 @@ rosrunをすると以下のような操作一覧が表示される。
 
 ⑤終わったら、fを押してhomeディレクトリにcsvファイルを作成する
 
-[https://i.gyazo.com/2f89af1e11addde05472ce07cb79bd01.png:image=https://i.gyazo.com/2f89af1e11addde05472ce07cb79bd01.png]
+(https://i.gyazo.com/2f89af1e11addde05472ce07cb79bd01.png"操作一覧")
 
 以上の操作により、以下のようにwaypointを設定できます。
-[https://i.gyazo.com/47c8cf93ff124f921bcca2185bee47d7.png:image=https://i.gyazo.com/47c8cf93ff124f921bcca2185bee47d7.png]
+(https://i.gyazo.com/47c8cf93ff124f921bcca2185bee47d7.png"rviz")
 
 youtubeリンク
 [https://youtu.be/eKGirAP-iAE:title]
