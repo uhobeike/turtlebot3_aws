@@ -105,6 +105,30 @@ $HOME以下にwaypoint.csvが作られる
 ~$ rosparam set /waypoint_area_threshold 1
 ```
 のように変更を行う（goする前に）
+
+6.rvizにてwaypointをセットする方法
+```
+~$ roslaunch turtlebot3_gazebo turtlebot3_aws.launch
+~$ roslaunch turtlebot3_navigation turtlebot3_navigation.launch map_file:=$HOME/map.yaml
+~$ rosrun turtlebot3_goal_send control_waypoint_rviz
+```
+rosrunをすると以下のような操作一覧が表示される。
+
+基本的な操作の流れとして
+
+①sを押して、nodeの立ち上げ
+②rviz上の右の方にある(以下写真の場所)の2d_pose_estimateのボタンを押しセットしていく
+③コーナやゴールとして置きたかったら、cまたはgを押す
+④間違えて作成したら、jで消す
+⑤終わったら、fを押してhomeディレクトリにcsvファイルを作成する
+
+[https://i.gyazo.com/2f89af1e11addde05472ce07cb79bd01.png:image=https://i.gyazo.com/2f89af1e11addde05472ce07cb79bd01.png]
+
+以上の操作により、以下のようにwaypointを設定できます。
+[https://i.gyazo.com/47c8cf93ff124f921bcca2185bee47d7.png:image=https://i.gyazo.com/47c8cf93ff124f921bcca2185bee47d7.png]
+
+youtubeリンク
+[https://youtu.be/eKGirAP-iAE:title]
 ___
 
 以下のリンクより、マッピングデータ(ナビゲーションしたいだけの人用,yamlファイルなどが入手できます)
