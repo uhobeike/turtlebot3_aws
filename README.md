@@ -51,23 +51,23 @@ ros-melodic-rqt-image-view ros-melodic-navigation
 ~$ source ~/.bashrc
 ```
 ___
-実践編
+# 実践編
 
-1.マッピング
+## 1.マッピング
 ```
 ~$ roslaunch turtlebot3_gazebo turtlebot3_aws.launch
 ~$ roslaunch turtlebot3_slam turtlebot3_slam.launch slam_methods:=gmapping
 ~$ roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch
 ~$ rosrun map_server map_saver -f ~/map
 ```
-2.ナビゲーション(指定位置)
+## 2.ナビゲーション(指定位置)
 ```
 ~$ roslaunch turtlebot3_gazebo turtlebot3_aws.launch
 ~$ roslaunch turtlebot3_navigation turtlebot3_navigation.launch map_file:=$HOME/map.yaml
 ~$ rosrun goal_send 4goal_send
 ~$ rosrun goal_send goal_control_key
 ```
-3.waypoint用 file生成方法
+## 3.waypoint用 file生成方法
 ```
 ~$ roslaunch turtlebot3_gazebo turtlebot3_aws.launch
 ~$ roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch
@@ -75,7 +75,7 @@ ___
 ```
 $HOME以下にwaypoint.csvが作られる
 
-4.waypointを利用したnavigation
+## 4.waypointを利用したnavigation
 ```
 ~$ roslaunch turtlebot3_gazebo turtlebot3_aws.launch
 ~$ roslaunch turtlebot3_navigation turtlebot3_navigation.launch map_file:=$HOME/map.yaml
@@ -83,7 +83,7 @@ $HOME以下にwaypoint.csvが作られる
 ~$ rosrun turtlebot3_goal_send goal_waypoint_control_key
 ```
 
-5.waypoint_navgationしきい値の変更方法
+## 5.waypoint_navgationしきい値の変更方法
 ```
 ~$ roslaunch turtlebot3_gazebo turtlebot3_aws.launch
 ~$ roslaunch turtlebot3_navigation turtlebot3_navigation.launch map_file:=$HOME/map.yaml
@@ -106,7 +106,7 @@ $HOME以下にwaypoint.csvが作られる
 ```
 のように変更を行う（goする前に）
 
-6.rvizにてwaypointをセットする方法
+## 6.rvizにてwaypointをセットする方法
 ```
 ~$ roslaunch turtlebot3_gazebo turtlebot3_aws.launch
 ~$ roslaunch turtlebot3_navigation turtlebot3_navigation.launch map_file:=$HOME/map.yaml
@@ -126,20 +126,20 @@ rosrunをすると以下のような操作一覧が表示される。
 
 ⑤終わったら、fを押してhomeディレクトリにcsvファイルを作成する
 
-(https://i.gyazo.com/2f89af1e11addde05472ce07cb79bd01.png"操作一覧")
+![](https://i.gyazo.com/2f89af1e11addde05472ce07cb79bd01.png"操作一覧")
 
 以上の操作により、以下のようにwaypointを設定できます。
-(https://i.gyazo.com/47c8cf93ff124f921bcca2185bee47d7.png"rviz")
+![](https://i.gyazo.com/47c8cf93ff124f921bcca2185bee47d7.png"rviz")
 
-youtubeリンク
-[https://youtu.be/eKGirAP-iAE:title]
+### [yotubeリンク](https://youtu.be/eKGirAP-iAE)
+
 ___
 
-以下のリンクより、マッピングデータ(ナビゲーションしたいだけの人用,yamlファイルなどが入手できます)
+### 以下のリンクより、マッピングデータ(ナビゲーションしたいだけの人用,yamlファイルなどが入手できます)
 
 https://drive.google.com/drive/folders/1ZoOuWc71f-aDIaHJTL2VshTnQ7ywS9pz?usp=sharing
 
-turtlebot3 e-manial
+### turtlebot3 e-manial
 
 http://emanual.robotis.com/docs/en/platform/turtlebot3/simulation/#ros-1-simulation
 
