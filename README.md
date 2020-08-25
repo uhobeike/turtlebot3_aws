@@ -117,9 +117,13 @@ rosrunをすると以下のような操作一覧が表示される。
 基本的な操作の流れとして
 
 ①sを押して、nodeの立ち上げ
+
 ②rviz上の右の方にある(以下写真の場所)の2d_pose_estimateのボタンを押しセットしていく
+
 ③コーナやゴールとして置きたかったら、cまたはgを押す
+
 ④間違えて作成したら、jで消す
+
 ⑤終わったら、fを押してhomeディレクトリにcsvファイルを作成する
 
 [https://i.gyazo.com/2f89af1e11addde05472ce07cb79bd01.png:image=https://i.gyazo.com/2f89af1e11addde05472ce07cb79bd01.png]
