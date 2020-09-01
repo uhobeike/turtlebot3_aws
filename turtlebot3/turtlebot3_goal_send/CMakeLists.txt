@@ -50,14 +50,17 @@ target_link_libraries(waypoint_set ${catkin_LIBRARIES})
 add_executable(waypoint_set_amcl src/waypoint_set_amcl.cpp)
 target_link_libraries(waypoint_set_amcl ${catkin_LIBRARIES})
 
-add_executable(4goal_waypoint_send src/4goal_waypoint_send.cpp)
+#add_executable(4goal_waypoint_send src/4goal_waypoint_send.cpp)
+#target_link_libraries(4goal_waypoint_send ${catkin_LIBRARIES})
+
+#add_executable(4goal_waypoint_send_2 src/4goal_waypoint_send_2.cpp)
+#target_link_libraries(4goal_waypoint_send_2 ${catkin_LIBRARIES})
+
+#add_executable(4goal_waypoint_send_3 src/4goal_waypoint_send_3.cpp)
+#target_link_libraries(4goal_waypoint_send_3 ${catkin_LIBRARIES})
+
+add_executable(4goal_waypoint_send src/4goal_waypoint_send_4.cpp)
 target_link_libraries(4goal_waypoint_send ${catkin_LIBRARIES})
-
-add_executable(4goal_waypoint_send_2 src/4goal_waypoint_send_2.cpp)
-target_link_libraries(4goal_waypoint_send_2 ${catkin_LIBRARIES})
-
-add_executable(4goal_waypoint_send_3 src/4goal_waypoint_send_3.cpp)
-target_link_libraries(4goal_waypoint_send_3 ${catkin_LIBRARIES})
 
 add_executable(waypoint_rviz src/waypoint_rviz_set.cpp)
 target_link_libraries(waypoint_rviz ${catkin_LIBRARIES})
@@ -68,7 +71,7 @@ target_link_libraries(waypoint_rviz ${catkin_LIBRARIES})
 install(DIRECTORY launch
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
-install(TARGETS 4goal_waypoint_send_2
+install(TARGETS 4goal_waypoint_send
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
