@@ -189,6 +189,12 @@ int main(int argc, char** argv)
         {"0.879312","2.512087","-0.986923","-0.161146","goal"}
     };
 
+    vector<vector<vector<string>>> a = 
+    {
+        { {"1.682101","0.298596","0.080469","0.996750"},{"1"} },
+        { {"2.293195","0.385175","0.052547","0.998611","goal"},{"2","3"} }
+    };
+
     geometry_msgs::PoseArray pose_array;
     geometry_msgs::Pose pose;
     pose_array.header.stamp = ros::Time::now(); 
