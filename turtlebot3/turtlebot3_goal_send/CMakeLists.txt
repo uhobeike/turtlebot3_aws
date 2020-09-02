@@ -62,7 +62,7 @@ target_link_libraries(waypoint_set_amcl ${catkin_LIBRARIES})
 add_executable(4goal_waypoint_send src/4goal_waypoint_send_4.cpp)
 target_link_libraries(4goal_waypoint_send ${catkin_LIBRARIES})
 
-add_executable(waypoint_rviz src/waypoint_rviz_set.cpp)
+add_executable(waypoint_rviz src/waypoint_rviz_set_2.cpp)
 target_link_libraries(waypoint_rviz ${catkin_LIBRARIES})
 
 ################################################################################

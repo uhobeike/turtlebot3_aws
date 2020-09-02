@@ -42,15 +42,18 @@ class waypoint_rviz
 
     uint16_t waypoint_number_;
     uint16_t waypoint_index_;
+    uint16_t rows_cnt = 0;
     uint32_t shape_;
     bool marker_mode_;
     bool marker_flag_;
+    bool three_rows_flag_;
 
     void waypoint_Callback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& pose);
     void control_Callback(const std_msgs::StringConstPtr& command);
 
     void waypoint_csv_(vector<string>& posi_set, vector<vector<string>>& csv_array, uint16_t &waypoint_number);
     void way_point_remove_(vector<vector<string>>& waypoint_remove, geometry_msgs::PoseArray& pose_array, visualization_msgs::Marker& marker, uint16_t &waypoint_number);
+    void way_point_3rows_set_(bool &three_rows_flag);
     void way_point_goal_set_(vector<vector<string>>& waypoint_goal, uint16_t &waypoint_number);
     void way_point_corner_set_(vector<vector<string>>& waypoint_corner, uint16_t &waypoint_number);
     void finish_and_file_write_waypoint_(vector<vector<string>>& waypoint_file_write, uint16_t &waypoint_number);
@@ -78,6 +81,7 @@ waypoint_rviz::waypoint_rviz() : nh_("")
   waypoint_number_ = 0;
   marker_mode_ = 0;
   marker_flag_ = 0;
+  three_rows_flag_ = 0;
 
   shape_ = visualization_msgs::Marker::POINTS;
 }
@@ -112,6 +116,11 @@ void waypoint_rviz::control_Callback(const std_msgs::StringConstPtr& command)
     way_point_remove_(csv_array_, pose_array_, marker_,waypoint_number_);
   }
 
+  else if(command->data == "3rows")
+  {
+    way_point_3rows_set_(three_rows_flag_);
+  }
+
   else if(command->data == "goal")
   {
     way_point_goal_set_(csv_array_, waypoint_number_);
@@ -130,8 +139,70 @@ void waypoint_rviz::control_Callback(const std_msgs::StringConstPtr& command)
 
 void waypoint_rviz::waypoint_csv_(vector<string>& posi_set, vector<vector<string>>& csv_array, uint16_t &waypoint_number)
 {
-  csv_array.push_back(posi_set);
-  waypoint_number++;
+  
+
+  if(!three_rows_flag_)
+  {
+    csv_array.push_back(posi_set);
+    waypoint_number++;
+  }
+
+  else if(three_rows_flag_)
+  {
+    switch (rows_cnt)
+    {
+      case 0:
+        static bool switch_flag = 0;
+        
+        if(switch_flag)
+        {
+          three_rows_flag_ = 0;
+        }
+
+        rows_cnt++;
+        break;
+  
+      case 1:
+        csv_array.push_back(posi_set);
+        csv_array[waypoint_number].push_back("left");
+        waypoint_number++;
+
+        switch_flag = 1;
+        rows_cnt++;
+        break;
+
+      case 2:
+        csv_array.push_back(posi_set);
+        csv_array[waypoint_number].push_back("center");
+        waypoint_number++;
+
+        rows_cnt++;
+        break;
+        
+      case 3:
+        csv_array.push_back(posi_set);
+        csv_array[waypoint_number].push_back("right");
+        waypoint_number++;
+
+        rows_cnt++;
+        break;
+      
+      case 4:
+        csv_array.push_back(posi_set);
+        waypoint_number++;
+
+        rows_cnt++;
+        break;
+      
+      case 5:
+        three_rows_flag_ = 0;
+        switch_flag = 0;
+        break;
+
+      default:
+        break;
+    }
+  }
 }
 
 void waypoint_rviz::way_point_remove_(vector<vector<string>>& waypoint_remove, geometry_msgs::PoseArray& pose_array, visualization_msgs::Marker& marker, uint16_t &waypoint_number)
@@ -154,6 +225,16 @@ void waypoint_rviz::way_point_remove_(vector<vector<string>>& waypoint_remove, g
 
     marker_pub_.publish(marker);
   }
+
+  if(rows_cnt)
+  {
+    rows_cnt--;
+  }
+}
+
+void waypoint_rviz::way_point_3rows_set_(bool &three_rows_flag)
+{
+  three_rows_flag = 1;
 }
 
 void waypoint_rviz::way_point_goal_set_(vector<vector<string>>& waypoint_goal, uint16_t &waypoint_number)
