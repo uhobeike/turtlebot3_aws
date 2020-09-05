@@ -47,6 +47,7 @@ class waypoint_rviz
     bool marker_mode_;
     bool marker_flag_;
     bool three_rows_flag_;
+    bool switch_flag;
 
     void waypoint_Callback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& pose);
     void control_Callback(const std_msgs::StringConstPtr& command);
@@ -82,6 +83,7 @@ waypoint_rviz::waypoint_rviz() : nh_("")
   marker_mode_ = 0;
   marker_flag_ = 0;
   three_rows_flag_ = 0;
+  switch_flag = 0;
 
   shape_ = visualization_msgs::Marker::POINTS;
 }
@@ -118,6 +120,13 @@ void waypoint_rviz::control_Callback(const std_msgs::StringConstPtr& command)
 
   else if(command->data == "3rows")
   {
+    if(switch_flag)
+    {
+      three_rows_flag_ = 1;
+      switch_flag = 0;
+      rows_cnt = 1;
+    }
+
     way_point_3rows_set_(three_rows_flag_);
   }
 
@@ -152,15 +161,20 @@ void waypoint_rviz::waypoint_csv_(vector<string>& posi_set, vector<vector<string
     switch (rows_cnt)
     {
       case 0:
-        static bool switch_flag = 0;
-        
         if(switch_flag)
         {
+          csv_array.push_back(posi_set);
+          waypoint_number++;
+          
           three_rows_flag_ = 0;
+          switch_flag = 0;
+          rows_cnt = 0;
+          cout << "off" << endl;
+          break;
         }
 
         rows_cnt++;
-        break;
+        cout << "mode on" << endl;
   
       case 1:
         csv_array.push_back(posi_set);
@@ -169,6 +183,7 @@ void waypoint_rviz::waypoint_csv_(vector<string>& posi_set, vector<vector<string
 
         switch_flag = 1;
         rows_cnt++;
+        cout << "left" << endl;
         break;
 
       case 2:
@@ -177,6 +192,7 @@ void waypoint_rviz::waypoint_csv_(vector<string>& posi_set, vector<vector<string
         waypoint_number++;
 
         rows_cnt++;
+        cout << "center" << endl;
         break;
         
       case 3:
@@ -185,20 +201,29 @@ void waypoint_rviz::waypoint_csv_(vector<string>& posi_set, vector<vector<string
         waypoint_number++;
 
         rows_cnt++;
+        cout << "right" << endl;
         break;
       
       case 4:
         csv_array.push_back(posi_set);
         waypoint_number++;
-
+        
+        
         rows_cnt++;
+        cout << "hozon" << endl;
         break;
-      
+
       case 5:
+        csv_array.push_back(posi_set);
+        waypoint_number++;
         three_rows_flag_ = 0;
         switch_flag = 0;
-        break;
+        rows_cnt = 0;
 
+        
+        cout << "next" << endl;
+        break;
+      
       default:
         break;
     }
@@ -229,6 +254,7 @@ void waypoint_rviz::way_point_remove_(vector<vector<string>>& waypoint_remove, g
   if(rows_cnt)
   {
     rows_cnt--;
+    cout << rows_cnt << endl;
   }
 }
 
