@@ -84,12 +84,7 @@ if __name__=="__main__":
             rospy.loginfo("waypoint_rviz node RUN")
           elif(flag == 1):
             rospy.loginfo("already waypoint_rviz node RUN\n")
-        '''
-        elif key == 'r' :
-          str = "3rows"
-          pub_way.publish(str)
-          rospy.loginfo("3_rows_mode ON...........")    
-        '''
+
         elif key == 'j' :
           str = "remove"
           pub_way.publish(str)
