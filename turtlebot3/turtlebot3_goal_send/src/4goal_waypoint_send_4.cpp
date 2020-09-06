@@ -166,7 +166,7 @@ int main(int argc, char** argv)
     ros::NodeHandle nh;
     ros::Publisher pub_pose_ini, pub_pose_way;
     ros::Time tmp_time = ros::Time::now();
-    nh.setParam("waypoint_area_threshold", 0.2);
+    nh.setParam("waypoint_area_threshold", 0.4);
 
     ros::Subscriber sub_key = nh.subscribe("goal_key", 1,  goal_key_Callback);
     ros::Subscriber sub_pos = nh.subscribe("amcl_pose", 100,  posi_Callback);
@@ -195,8 +195,14 @@ int main(int argc, char** argv)
         {"2.947154","2.108109","-0.999995","0.003270"},
         {"2.017048","2.120343","0.959572","0.281462"},
         {"1.684018","2.434848","0.952581","0.304284"},
-        {"0.968490","2.439658","-0.997798","0.066331","goal"}
-
+        {"1.143563","2.450880","-0.873733","0.486406","goal"},
+        {"0.999856","2.142421","-0.725193","0.688546"},
+        {"1.023423","1.189682","-0.704009","0.710191"},
+        {"0.717609","1.037424","-0.997880","0.065081"},
+        {"0.213692","0.954463","-0.998536","0.054091"},
+        {"0.483041","0.473004","-0.438033","0.898959"},
+        {"0.774195","0.061594","0.999990","0.004416"},
+        {"0.0","0.0","-0.999944","0.010547","goal"}
     };
 
     geometry_msgs::PoseArray pose_array;
@@ -229,7 +235,7 @@ int main(int argc, char** argv)
     int point_number=0;
     int next_point_flag = 0;
     int goal_point_flag = 0;
-    double area_threshold = 0.2;
+    double area_threshold = 0.4;
     while(ros::ok())
     {  
         nh.getParam("waypoint_area_threshold", area_threshold);
