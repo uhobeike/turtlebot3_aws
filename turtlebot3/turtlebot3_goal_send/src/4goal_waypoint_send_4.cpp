@@ -29,6 +29,7 @@ bool lock_flag;
 bool goal_reached_flag;
 bool goal_restart_flag;
 bool final_goal_flag;
+uint16_t goal_reached_cnt;
 string vec_num = "0";
 vector<double> posi_set = 
 {
@@ -66,22 +67,23 @@ void goal_reached_Callback(const actionlib_msgs::GoalStatusArray::ConstPtr &stat
     {
         actionlib_msgs::GoalStatus goalStatus = status->status_list[0];
 
-        if(goalStatus.status == 3 && goal_reached_flag == 0 && lock_flag == 0) goal_reached_flag = 1;
-        
+        if(goalStatus.status == 3 && goal_reached_flag == 0 && lock_flag == 0) goal_reached_cnt++;
+
+        if(goal_reached_cnt >= 10)
+        {
+            goal_reached_flag = 1;
+            goal_reached_cnt = 0;
+        }
+
         if(goalStatus.status != 0 && goalStatus.status != 3) lock_flag = 0;
     }
 }  
 
 void goal_check(vector<vector<string>>& waypoint, int& point_number, int& vec_size, int& next_point_flag, int& goal_point_flag)
 {   
-    if(waypoint[point_number].size() >= 0 && waypoint[point_number].size() <= 4)
-    {
-        next_point_flag = 1;
-    }
-    else if(waypoint[point_number].size() > 4)
-    {
-        goal_point_flag = 1;
-    }
+    if(waypoint[point_number].size() >= 0 && waypoint[point_number].size() <= 4) next_point_flag = 1;
+
+    else if(waypoint[point_number].size() > 4) goal_point_flag = 1;
 
     if(point_number == (vec_size - 2) && goal_reached_flag) final_goal_flag = 1;
 
@@ -91,6 +93,12 @@ void goal_check(vector<vector<string>>& waypoint, int& point_number, int& vec_si
         ROS_INFO("go Comand Only ,but 'q' is shutdown");
         goal_reached_flag = 0;
         lock_flag = 1;
+
+        if(waypoint[point_number].size() == 4)
+        {
+            point_number++;
+            goal_restart_flag = 0;
+        }
     }
 
     if(goal_restart_flag)
@@ -146,7 +154,6 @@ void waypoint_pose_array(vector<vector<string>>& waypoint_read, geometry_msgs::P
             
             if(vec_cnt_in == 3) pose.orientation.z = stod(*it);
             if(vec_cnt_in == 4) pose.orientation.w = stod(*it);
-
         }
 
         pose_array.poses.push_back(pose);
@@ -178,15 +185,18 @@ int main(int argc, char** argv)
 
     vector<vector<string>> waypoint_read = 
     {
-        {"1.682101","0.298596","0.080469","0.996750"},
-        {"2.293195","0.385175","0.052547","0.998611","goal"},
-        {"4.433884","0.630851","0.322288","0.946634"},
-        {"4.545833","1.225776","0.380812","0.924644"},
-        {"5.062553","1.350851","0.999918","-0.012198","goal"},
-        {"3.380071","1.284730","0.987302","0.158811"},
-        {"3.033352","1.867196","0.950085","0.311968","goal"},
-        {"1.938033","2.178706","0.964381","0.264490"},
-        {"0.879312","2.512087","-0.986923","-0.161146","goal"}
+        {"2.373438","0.238057","0.005113","0.999987","goal"},
+        {"4.479971","0.376918","-0.002169","0.999998"},
+        {"4.515158","0.761937","0.703631","0.710565"},
+        {"4.515285","1.282344","0.702802","0.711386"},
+        {"5.127082","1.294671","0.999952","0.009825","goal"},
+        {"3.240542","1.380090","0.999999","0.001407"},
+        {"3.161743","1.831384","0.830963","0.556328","goal"},
+        {"2.947154","2.108109","-0.999995","0.003270"},
+        {"2.017048","2.120343","0.959572","0.281462"},
+        {"1.684018","2.434848","0.952581","0.304284"},
+        {"0.968490","2.439658","-0.997798","0.066331","goal"}
+
     };
 
     geometry_msgs::PoseArray pose_array;
