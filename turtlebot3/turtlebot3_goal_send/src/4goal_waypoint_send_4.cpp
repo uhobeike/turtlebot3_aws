@@ -104,9 +104,8 @@ void goal_check(vector<vector<string>>& waypoint, int& point_number, int& vec_si
     if(goal_restart_flag)
     {
         ROS_INFO("RESTART");
-
+        
         point_number++;
-
         goal_restart_flag = 0;
     }
 
@@ -166,7 +165,6 @@ int main(int argc, char** argv)
     ros::NodeHandle nh;
     ros::Publisher pub_pose_ini, pub_pose_way;
     ros::Time tmp_time = ros::Time::now();
-    nh.setParam("waypoint_area_threshold", 0.4);
 
     ros::Subscriber sub_key = nh.subscribe("goal_key", 1,  goal_key_Callback);
     ros::Subscriber sub_pos = nh.subscribe("amcl_pose", 100,  posi_Callback);
@@ -185,24 +183,24 @@ int main(int argc, char** argv)
 
     vector<vector<string>> waypoint_read = 
     {
-        {"2.373438","0.238057","0.005113","0.999987","goal"},
+        {"2.373438","0.238057","0.005113","0.999987","goal","0.4"},
         {"4.479971","0.376918","-0.002169","0.999998"},
         {"4.515158","0.761937","0.703631","0.710565"},
         {"4.515285","1.282344","0.702802","0.711386"},
-        {"5.127082","1.294671","0.999952","0.009825","goal"},
+        {"5.127082","1.294671","0.999952","0.009825","goal","0.4"},
         {"3.240542","1.380090","0.999999","0.001407"},
-        {"3.161743","1.831384","0.830963","0.556328","goal"},
+        {"3.161743","1.831384","0.830963","0.556328","goal","0.3"},
         {"2.947154","2.108109","-0.999995","0.003270"},
         {"2.017048","2.120343","0.959572","0.281462"},
         {"1.684018","2.434848","0.952581","0.304284"},
-        {"1.143563","2.450880","-0.873733","0.486406","goal"},
+        {"1.143563","2.450880","-0.873733","0.486406","goal","0.4"},
         {"0.999856","2.142421","-0.725193","0.688546"},
         {"1.023423","1.189682","-0.704009","0.710191"},
         {"0.717609","1.037424","-0.997880","0.065081"},
         {"0.213692","0.954463","-0.998536","0.054091"},
         {"0.483041","0.473004","-0.438033","0.898959"},
         {"0.774195","0.061594","0.999990","0.004416"},
-        {"0.0","0.0","-0.999944","0.010547","goal"}
+        {"0.0","0.0","-0.999944","0.010547","goal","0.4"}
     };
 
     geometry_msgs::PoseArray pose_array;
@@ -238,14 +236,12 @@ int main(int argc, char** argv)
     double area_threshold = 0.4;
     while(ros::ok())
     {  
-        nh.getParam("waypoint_area_threshold", area_threshold);
-
         if(start_flag)
         {
             goal_check(waypoint_read,  point_number, vec_size, next_point_flag, goal_point_flag);
 
             if(next_point_flag)
-            {        
+            {   
                 goal.target_pose.pose.position.x    = stod(waypoint_read[point_number][0]);
                 goal.target_pose.pose.position.y    = stod(waypoint_read[point_number][1]);
                 goal.target_pose.pose.orientation.z = stod(waypoint_read[point_number][2]);
@@ -265,7 +261,8 @@ int main(int argc, char** argv)
                 goal.target_pose.pose.orientation.w = stod(waypoint_read[point_number][3]);
 
                 ac.sendGoal(goal);
-
+                
+                if(waypoint_read[point_number].size() == 6) area_threshold = stod(waypoint_read[point_number][5]);
                 goal_point_flag = 0;
             }
         }
