@@ -139,7 +139,7 @@ if __name__=="__main__":
     target_angular_vel  = 0.0
     control_linear_vel  = 0.0
     control_angular_vel = 0.0
-
+    pub_flag = 1
     try:
         print(msg)
         while(1):
@@ -176,6 +176,8 @@ if __name__=="__main__":
                  str = "way_point_remove"
                  pub_way.publish(str)
                  rospy.loginfo("way_point_remove.........")
+            elif key == 'q' :
+                 pub_flag = 0
             elif key == ' ' or key == 's' :
                 target_linear_vel   = 0.0
                 control_linear_vel  = 0.0
@@ -198,7 +200,8 @@ if __name__=="__main__":
             control_angular_vel = makeSimpleProfile(control_angular_vel, target_angular_vel, (ANG_VEL_STEP_SIZE/2.0))
             twist.angular.x = 0.0; twist.angular.y = 0.0; twist.angular.z = control_angular_vel
 
-            pub.publish(twist)
+            if pub_flag :
+                pub.publish(twist)
 
     except:
         print(e)
