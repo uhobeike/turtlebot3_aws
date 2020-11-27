@@ -1,8 +1,6 @@
 # turtlebot3_aws
 
-# takagon_delivery_challenge開催中で〜す:satisfied:
-
-# [開催場所](https://github.com/uhobeike/turtlebot3_aws/tree/takagon_delivery_challenge):feet::feet:
+# [自律移動と時の部屋](https://github.com/uhobeike/turtlebot3_aws/tree/takagon_delivery_challenge):feet::feet:
 
 ### パッケージ概要
 AWS Robot Delivery Challengeのためにturtlebot3のパッケージを使用して色々実装していき、戦うためのパッケージ。
